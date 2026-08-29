@@ -42,6 +42,27 @@ export const AdminProvider = ({ children }) => {
     }
   }, [authRole]);
 
+  // Live updates: poll for new orders/reservations/messages/tables every few
+  // seconds while logged in, so kitchen/admin see new customer activity
+  // without needing to log out and back in or reload the page.
+  useEffect(() => {
+    if (!isKitchenAuthenticated) return;
+    const interval = setInterval(() => {
+      refreshOrders();
+      refreshTables();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [authRole]);
+
+  useEffect(() => {
+    if (!isAdminAuthenticated) return;
+    const interval = setInterval(() => {
+      refreshReservations();
+      refreshMessages();
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [authRole]);
+
   const login = async (username, password) => {
     try {
       const data = await apiCall('/auth/login', {
