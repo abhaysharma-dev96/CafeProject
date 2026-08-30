@@ -88,7 +88,7 @@ export const AdminProvider = ({ children }) => {
   const refreshReservations = async () => {
     try {
       const data = await apiCall('/reservations');
-      setReservations(data);
+      setReservations((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
     } catch (err) { /* silently ignore, likely not authed */ }
   };
 
@@ -117,7 +117,7 @@ export const AdminProvider = ({ children }) => {
   const refreshMessages = async () => {
     try {
       const data = await apiCall('/messages');
-      setMessages(data);
+      setMessages((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
     } catch (err) { /* not authed yet */ }
   };
 
@@ -172,7 +172,7 @@ export const AdminProvider = ({ children }) => {
   const refreshTables = async () => {
     try {
       const data = await apiCall('/tables');
-      setTables(data);
+      setTables((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
     } catch (err) { /* ignore */ }
   };
 
@@ -198,7 +198,7 @@ export const AdminProvider = ({ children }) => {
   const refreshOrders = async () => {
     try {
       const data = await apiCall('/orders');
-      setOrders(data);
+      setOrders((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
     } catch (err) { /* not authed yet */ }
   };
 
