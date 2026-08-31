@@ -47,8 +47,8 @@ const Footer = () => {
           <div className="flex flex-wrap justify-center gap-4 md:gap-8 mt-4 md:mt-0">
             <span>Designed with Intention</span>
             <span>Est. 2024</span>
-            <Link to="/admin" className="hover:text-primary transition-colors underline">Admin</Link>
-            <Link to="/kitchen" className="hover:text-primary transition-colors underline">Kitchen</Link>
+            {/* <Link to="/admin" className="hover:text-primary transition-colors underline">Admin</Link>
+            <Link to="/kitchen" className="hover:text-primary transition-colors underline">Kitchen</Link> */}
           </div>
         </div>
       </div>
