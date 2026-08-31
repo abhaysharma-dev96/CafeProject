@@ -14,6 +14,8 @@ export const AdminProvider = ({ children }) => {
   const [reservations, setReservations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [menuLoading, setMenuLoading] = useState(true);
+  const [menuError, setMenuError] = useState('');
   const [tables, setTables] = useState([]);
   const [orders, setOrders] = useState([]);
 
@@ -141,10 +143,16 @@ export const AdminProvider = ({ children }) => {
 
   // ---- Menu ----
   const refreshMenu = async () => {
+    setMenuLoading(true);
+    setMenuError('');
     try {
       const data = await apiCall('/menu');
       setMenuItems(data);
-    } catch (err) { /* ignore */ }
+    } catch (err) {
+      setMenuError(err.message || 'Could not load the menu. Please try again.');
+    } finally {
+      setMenuLoading(false);
+    }
   };
 
   const addMenuItem = async (item) => {
@@ -238,7 +246,7 @@ export const AdminProvider = ({ children }) => {
       authChecked, isAdminAuthenticated, isKitchenAuthenticated, login, logout,
       reservations, addReservation, updateReservationStatus, deleteReservation, refreshReservations,
       messages, addMessage, markMessageRead, deleteMessage, refreshMessages,
-      menuItems, addMenuItem, updateMenuItem, deleteMenuItem,
+      menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
       tables, addTable, removeTable,
       orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders
     }}>

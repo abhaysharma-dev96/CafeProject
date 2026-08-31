@@ -12,7 +12,7 @@ const Menu = () => {
   const [sortBy, setSortBy] = useState('default');
   const [selectedImage, setSelectedImage] = useState(null);
   const { addToCart, removeFromCart, getQuantity, tableId, setTableId, setIsCartOpen } = useCart();
-  const { menuItems } = useAdmin();
+  const { menuItems, menuLoading, menuError, refreshMenu } = useAdmin();
   const [searchParams] = useSearchParams();
   const categories = ['Coffee', 'Tea', 'Snacks', 'Desserts'];
 
@@ -137,6 +137,25 @@ const Menu = () => {
         </div>
 
         {/* Menu Grid */}
+        {menuLoading ? (
+          <div className="flex flex-col items-center justify-center py-24 text-secondary/50">
+            <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+            <p>Loading menu...</p>
+          </div>
+        ) : menuError ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <p className="text-error font-bold mb-4">{menuError}</p>
+            <p className="text-secondary/60 text-sm mb-6">
+              The server may be waking up from sleep — this can take up to a minute on the first visit.
+            </p>
+            <button
+              onClick={refreshMenu}
+              className="bg-primary text-white px-6 py-3 rounded-full font-bold hover:shadow-lg transition-all"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
         <motion.div 
           layout
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -203,6 +222,7 @@ const Menu = () => {
             })}
           </AnimatePresence>
         </motion.div>
+        )}
 
         {/* Lightbox */}
         <AnimatePresence>
