@@ -44,47 +44,51 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 bg-surface/80 backdrop-blur-lg border-b border-primary/10 ${isScrolled ? 'py-4 shadow-sm' : 'py-6'}`}>
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        <Link to="/" className="font-headline-md text-2xl font-bold text-primary tracking-tight">
-          Brew & Hearth
-        </Link>
+    <>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 bg-surface/80 backdrop-blur-lg border-b border-primary/10 ${isScrolled ? 'py-4 shadow-sm' : 'py-6'}`}>
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex justify-between items-center">
+          <Link to="/" className="font-headline-md text-2xl font-bold text-primary tracking-tight">
+            Brew & Hearth
+          </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`font-body-md text-sm tracking-wide transition-all relative py-1 ${location.pathname === link.path ? 'text-primary font-bold' : 'text-secondary hover:text-primary'}`}
-            >
-              {link.name}
-              {location.pathname === link.path && (
-                <motion.div layoutId="navUnderline" className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
-              )}
-            </Link>
-          ))}
-          <button onClick={() => setIsCartOpen(true)} className="p-2 hover:scale-110 transition-transform text-primary relative">
-            <ShoppingBag size={20} />
-            <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{totalItems}</span>
-          </button>
-        </div>
-
-        {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-4">
-          <button onClick={() => setIsCartOpen(true)} className="p-2 text-primary relative">
-            <ShoppingBag size={20} />
-            {totalItems > 0 && (
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`font-body-md text-sm tracking-wide transition-all relative py-1 ${location.pathname === link.path ? 'text-primary font-bold' : 'text-secondary hover:text-primary'}`}
+              >
+                {link.name}
+                {location.pathname === link.path && (
+                  <motion.div layoutId="navUnderline" className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+                )}
+              </Link>
+            ))}
+            <button onClick={() => setIsCartOpen(true)} className="p-2 hover:scale-110 transition-transform text-primary relative">
+              <ShoppingBag size={20} />
               <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{totalItems}</span>
-            )}
-          </button>
-          <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-primary">
-            <Menu size={24} />
-          </button>
-        </div>
-      </div>
+            </button>
+          </div>
 
-      {/* Mobile Menu */}
+          {/* Mobile Toggle */}
+          <div className="md:hidden flex items-center gap-4">
+            <button onClick={() => setIsCartOpen(true)} className="p-2 text-primary relative">
+              <ShoppingBag size={20} />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{totalItems}</span>
+              )}
+            </button>
+            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-primary">
+              <Menu size={24} />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu — rendered OUTSIDE <nav> so it isn't affected by nav's
+          backdrop-blur, which otherwise breaks position:fixed to only cover
+          the navbar's own box instead of the full viewport. */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -120,7 +124,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 };
 
