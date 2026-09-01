@@ -112,7 +112,7 @@ const Reservations = () => {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-headline-lg text-6xl text-primary mb-6"
+            className="font-headline-lg text-4xl md:text-6xl text-primary mb-6"
           >
             Join Us at the Hearth
           </motion.h1>
@@ -125,7 +125,7 @@ const Reservations = () => {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-10 rounded-[40px] shadow-sm border border-primary/5 relative"
+            className="bg-white p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] shadow-sm border border-primary/5 relative"
           >
             <div className="flex items-center gap-3 mb-8">
               <Calendar className="text-primary" />
@@ -176,13 +176,13 @@ const Reservations = () => {
 
               <div className="space-y-4">
                 <label className="text-xs font-bold uppercase tracking-widest text-secondary/60 ml-1">Party Size</label>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                   {[1, 2, 3, 4, '5+'].map((n) => (
                     <button 
                       key={n} 
                       type="button" 
                       onClick={() => setReservation({ ...reservation, partySize: n })}
-                      className={`w-12 h-12 rounded-full border border-primary/10 flex items-center justify-center font-bold transition-all ${reservation.partySize === n ? 'bg-primary text-white scale-110' : 'hover:bg-primary/5'}`}
+                      className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-primary/10 flex items-center justify-center font-bold text-sm sm:text-base transition-all ${reservation.partySize === n ? 'bg-primary text-white scale-110' : 'hover:bg-primary/5'}`}
                     >
                       {n}
                     </button>
@@ -254,7 +254,7 @@ const Reservations = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-surface-container-low p-10 rounded-[40px]"
+              className="bg-surface-container-low p-6 sm:p-10 rounded-[32px] sm:rounded-[40px]"
             >
               <h3 className="font-headline-md text-3xl text-primary mb-8">Get in Touch</h3>
               <form className="space-y-6" onSubmit={handleContactSubmit} noValidate>
