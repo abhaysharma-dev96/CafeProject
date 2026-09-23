@@ -21,6 +21,7 @@ import AdminMessages from './admin/AdminMessages';
 import AdminMenu from './admin/AdminMenu';
 import AdminOrders from './admin/AdminOrders';
 import AdminQRCodes from './admin/AdminQRCodes';
+import AdminSettings from './admin/AdminSettings';
 import KitchenLogin from './admin/KitchenLogin';
 import KitchenView from './admin/KitchenView';
 
@@ -58,6 +59,7 @@ function App() {
               <Route path="messages" element={<AdminMessages />} />
               <Route path="menu" element={<AdminMenu />} />
               <Route path="qr-codes" element={<AdminQRCodes />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Kitchen */}
