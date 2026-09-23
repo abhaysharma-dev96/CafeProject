@@ -18,6 +18,7 @@ export const AdminProvider = ({ children }) => {
   const [menuError, setMenuError] = useState('');
   const [tables, setTables] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [siteSettings, setSiteSettings] = useState(null);
 
   const getSettings = async () => {
     const data = await apiCall('/settings');
@@ -29,8 +30,13 @@ export const AdminProvider = ({ children }) => {
       method: 'PUT',
       body: JSON.stringify(settings)
     });
+    setSiteSettings(data);
     return data;
   };
+
+  useEffect(() => {
+    getSettings().then(setSiteSettings).catch(() => {});
+  }, []);
 
   // On first load, ask the backend "am I already logged in?" (httpOnly cookie based)
   useEffect(() => {
@@ -260,7 +266,7 @@ export const AdminProvider = ({ children }) => {
       reservations, addReservation, updateReservationStatus, deleteReservation, refreshReservations,
       messages, addMessage, markMessageRead, deleteMessage, refreshMessages,
       menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
-      getSettings, updateSettings,
+      getSettings, updateSettings, siteSettings,
       tables, addTable, removeTable,
       orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders
     }}>

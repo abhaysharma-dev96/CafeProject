@@ -5,18 +5,18 @@ import { useAdmin } from '../context/AdminContext';
 const emptySettings = {
   logoUrl: '',
   websiteName: 'Brew & Hearth',
-  instagramUrl: '',
-  whatsappNumber: '',
+  instagramUrl: 'https://instagram.com/brewandhearth',
+  whatsappNumber: '+15551234567',
   whatsappEnabled: true,
   whatsappMessage: 'Hello, I would like to know more about Brew & Hearth.',
   shopOpenTime: '08:00 AM',
   shopCloseTime: '08:00 PM',
-  contactNumber: '',
-  email: '',
-  address: '',
-  footerText: '',
-  footerLinks: '',
-  copyright: ''
+  contactNumber: '+1 (555) 123-4567',
+  email: 'hello@brewandhearth.com',
+  address: '123 Artisan Alley, Portland, OR 97209',
+  footerText: 'A space for mindful consumption and deliberate pauses.',
+  footerLinks: 'Careers | Privacy Policy | Terms of Service',
+  copyright: '© 2024 Brew & Hearth. All Rights Reserved.'
 };
 
 const AdminSettings = () => {
@@ -30,7 +30,7 @@ const AdminSettings = () => {
       .then((settings) => setForm({ ...emptySettings, ...settings }))
       .catch((error) => setStatus(error.message || 'Could not load settings.'))
       .finally(() => setLoading(false));
-  }, [getSettings]);
+  }, []);
 
   const update = (key, value) => setForm((current) => ({ ...current, [key]: value }));
 
