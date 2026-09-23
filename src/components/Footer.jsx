@@ -54,6 +54,9 @@ const Footer = () => {
               {addressParts.map((part) => <React.Fragment key={part}>{part}<br /></React.Fragment>)}
               <a href={`tel:${settings.contactNumber}`} className="text-primary mt-4 block">{settings.contactNumber}</a>
               <a href={`mailto:${settings.email}`} className="text-primary block">{settings.email}</a>
+              <span className="text-secondary/70 block mt-4">
+                Open: {settings.shopOpenTime} - {settings.shopCloseTime}
+              </span>
             </address>
           </div>
         </div>
