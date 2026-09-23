@@ -12,6 +12,8 @@ const Footer = () => {
     contactNumber: '(555) 123-4567',
     email: 'hello@brewandhearth.com',
     address: '123 Artisan Alley, Portland, OR 97209',
+    shopOpenTime: '08:00 AM',
+    shopCloseTime: '08:00 PM',
     copyright: '© 2024 Brew & Hearth. All Rights Reserved.',
     ...siteSettings
   };
