@@ -13,12 +13,14 @@ const KitchenLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const role = await login(username, password);
-    if (role === 'kitchen' || role === 'admin') {
-      navigate('/kitchen');
-    } else {
-      setError('Invalid username or password.');
-      setTimeout(() => setError(''), 3000);
+    try {
+      const role = await login(username, password);
+      if (role === 'kitchen' || role === 'admin') {
+        navigate('/kitchen');
+      }
+    } catch (err) {
+      setError(err.message || 'Unable to log in. Please try again.');
+      setTimeout(() => setError(''), 4000);
     }
   };
 

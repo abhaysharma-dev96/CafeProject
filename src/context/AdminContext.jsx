@@ -93,7 +93,7 @@ export const AdminProvider = ({ children }) => {
       setAuthRole(data.role);
       return data.role;
     } catch (err) {
-      return false;
+      throw err;
     }
   };
 

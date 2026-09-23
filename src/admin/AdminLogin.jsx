@@ -13,15 +13,17 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const role = await login(username, password);
-    if (role === 'admin') {
-      navigate('/admin');
-    } else if (role === 'kitchen') {
-      setError('These are kitchen staff credentials. Use the Kitchen login instead.');
+    try {
+      const role = await login(username, password);
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'kitchen') {
+        setError('These are kitchen staff credentials. Use the Kitchen login instead.');
+        setTimeout(() => setError(''), 4000);
+      }
+    } catch (err) {
+      setError(err.message || 'Unable to log in. Please try again.');
       setTimeout(() => setError(''), 4000);
-    } else {
-      setError('Invalid username or password.');
-      setTimeout(() => setError(''), 3000);
     }
   };
 
