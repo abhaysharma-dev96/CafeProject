@@ -3,13 +3,28 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 // Wraps fetch: always sends cookies (for login sessions), always parses JSON,
 // and throws a readable error message if the backend returns a failure.
 export const apiCall = async (endpoint, options = {}) => {
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  });
+  let res;
 
-  const data = await res.json().catch(() => ({}));
+  try {
+    res = await fetch(`${API_URL}${endpoint}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      ...options
+    });
+  } catch (err) {
+    throw new Error('Backend is not reachable right now. Please check that the server is running and try again.');
+  }
+
+  let data = {};
+
+  try {
+    const text = await res.text();
+    if (text) {
+      data = JSON.parse(text);
+    }
+  } catch {
+    data = {};
+  }
 
   if (!res.ok) {
     throw new Error(data.message || 'Something went wrong. Please try again.');
