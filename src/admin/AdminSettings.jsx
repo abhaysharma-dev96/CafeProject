@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Save, Settings as SettingsIcon } from 'lucide-react';
+import { KeyRound, Save, Settings as SettingsIcon } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const emptySettings = {
@@ -20,10 +20,12 @@ const emptySettings = {
 };
 
 const AdminSettings = () => {
-  const { getSettings, updateSettings } = useAdmin();
+  const { getSettings, updateSettings, changePassword } = useAdmin();
   const [form, setForm] = useState(emptySettings);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordStatus, setPasswordStatus] = useState('');
 
   useEffect(() => {
     getSettings()
@@ -51,6 +53,27 @@ const AdminSettings = () => {
       setStatus('Saved successfully.');
     } catch (error) {
       setStatus(error.message || 'Could not save settings.');
+    }
+  };
+
+  const updatePasswordField = (key, value) => {
+    setPasswordForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const savePassword = async (event) => {
+    event.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus('New passwords do not match.');
+      return;
+    }
+
+    setPasswordStatus('Changing password...');
+    try {
+      await changePassword(passwordForm.currentPassword, passwordForm.newPassword);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPasswordStatus('Password changed successfully.');
+    } catch (error) {
+      setPasswordStatus(error.message || 'Could not change password.');
     }
   };
 
@@ -119,6 +142,38 @@ const AdminSettings = () => {
             </div>
           </>
         )}
+      </form>
+
+      <form onSubmit={savePassword} className="mt-6 bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-primary/5 space-y-5">
+        <div className="flex items-center gap-3">
+          <KeyRound className="text-primary" size={22} />
+          <h2 className="font-headline-md text-2xl text-primary">Change Admin Password</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {[
+            ['currentPassword', 'Current Password'],
+            ['newPassword', 'New Password'],
+            ['confirmPassword', 'Confirm New Password']
+          ].map(([key, label]) => (
+            <label key={key} className="block text-sm font-bold text-secondary">
+              {label}
+              <input
+                type="password"
+                required
+                minLength={key === 'currentPassword' ? undefined : 6}
+                value={passwordForm[key]}
+                onChange={(event) => updatePasswordField(key, event.target.value)}
+                className={`${inputClass} mt-2 font-normal`}
+              />
+            </label>
+          ))}
+        </div>
+        <div className="flex items-center gap-4">
+          <button type="submit" className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
+            <KeyRound size={17} /> Change Password
+          </button>
+          {passwordStatus && <p className="text-sm font-bold text-secondary">{passwordStatus}</p>}
+        </div>
       </form>
     </div>
   );

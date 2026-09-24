@@ -34,6 +34,13 @@ export const AdminProvider = ({ children }) => {
     return data;
   };
 
+  const changePassword = async (currentPassword, newPassword) => {
+    return apiCall('/auth/password', {
+      method: 'PATCH',
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+  };
+
   useEffect(() => {
     getSettings().then(setSiteSettings).catch(() => {});
   }, []);
@@ -266,7 +273,7 @@ export const AdminProvider = ({ children }) => {
       reservations, addReservation, updateReservationStatus, deleteReservation, refreshReservations,
       messages, addMessage, markMessageRead, deleteMessage, refreshMessages,
       menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
-      getSettings, updateSettings, siteSettings,
+      getSettings, updateSettings, changePassword, siteSettings,
       tables, addTable, removeTable,
       orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders
     }}>
