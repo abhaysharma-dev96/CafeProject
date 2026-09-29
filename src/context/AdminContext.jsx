@@ -44,6 +44,10 @@ const defaultGalleryItems = [
   }
 ];
 
+// Polling intervals (ms). Kam requests = 429 ka chance kam.
+const KITCHEN_POLL_MS = 15000;
+const ADMIN_POLL_MS = 30000;
+
 export const AdminProvider = ({ children }) => {
   const [authRole, setAuthRole] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -133,24 +137,27 @@ export const AdminProvider = ({ children }) => {
     }
   }, [authRole]);
 
-  // Live updates: poll for new orders/reservations/messages/tables every few
-  // seconds while logged in, so kitchen/admin see new customer activity
-  // without needing to log out and back in or reload the page.
+  // Live updates: poll while logged in, but only when the tab is visible
+  // and at a gentler interval so we don't hit the backend rate limit.
   useEffect(() => {
     if (!isKitchenAuthenticated) return;
-    const interval = setInterval(() => {
+    const tick = () => {
+      if (document.visibilityState !== 'visible') return;
       refreshOrders();
       refreshTables();
-    }, 5000);
+    };
+    const interval = setInterval(tick, KITCHEN_POLL_MS);
     return () => clearInterval(interval);
   }, [authRole]);
 
   useEffect(() => {
     if (!isAdminAuthenticated) return;
-    const interval = setInterval(() => {
+    const tick = () => {
+      if (document.visibilityState !== 'visible') return;
       refreshReservations();
       refreshMessages();
-    }, 8000);
+    };
+    const interval = setInterval(tick, ADMIN_POLL_MS);
     return () => clearInterval(interval);
   }, [authRole]);
 
