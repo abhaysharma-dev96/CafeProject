@@ -138,6 +138,15 @@ const AdminLayout = () => {
 
         {/* Content */}
         <main className="flex-1 md:ml-64 p-5 md:p-10">
+          <div className="hidden md:flex justify-end mb-6">
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-secondary shadow-sm border border-primary/5 hover:bg-error-container hover:text-on-error-container transition-all"
+              aria-label="Log out"
+            >
+              <LogOut size={17} /> Log Out
+            </button>
+          </div>
           <Outlet />
         </main>
       </div>
