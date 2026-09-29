@@ -57,4 +57,4 @@ const Hero = ({ title, subtitle, primaryCTA, secondaryCTA, backgroundImage }) =>
   );
 };
 
-export default Hero;
+export default Hero ;
