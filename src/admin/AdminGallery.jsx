@@ -13,9 +13,15 @@ const emptyForm = {
 const AdminGallery = () => {
   const { galleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem } = useAdmin();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState('');
+
+  const categories = ['All', 'Interior', 'Food & Drink', 'Events'];
+  const filteredItems = activeFilter === 'All'
+    ? galleryItems
+    : galleryItems.filter((item) => item.category === activeFilter);
 
   const openAddForm = () => {
     setForm(emptyForm);
@@ -87,8 +93,24 @@ const AdminGallery = () => {
         </button>
       </div>
 
+      <div className="flex flex-wrap justify-center gap-4 mb-8">
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setActiveFilter(category)}
+            className={`px-6 py-2 rounded-full border text-sm font-bold tracking-wide transition-all ${
+              activeFilter === category
+                ? 'bg-primary text-white border-primary shadow-lg scale-105'
+                : 'bg-white text-secondary border-primary/10 hover:border-primary/30'
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {galleryItems.map((item) => (
+        {filteredItems.map((item) => (
           <div key={item.id} className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-primary/5">
             <img src={item.image} alt={item.title} className="h-60 w-full object-cover" />
             <div className="p-4">
