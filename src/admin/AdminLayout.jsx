@@ -35,6 +35,7 @@ const AdminLayout = () => {
     { to: '/admin/reservations', label: 'Reservations', icon: Calendar, badge: pendingCount },
     { to: '/admin/messages', label: 'Messages', icon: MessageSquare, badge: unreadCount },
     { to: '/admin/menu', label: 'Menu', icon: Coffee },
+    { to: '/admin/gallery', label: 'Gallery', icon: MenuIcon },
     { to: '/admin/qr-codes', label: 'QR Codes', icon: QrCode },
     { to: '/admin/settings', label: 'Settings', icon: Settings }
   ];

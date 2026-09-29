@@ -5,6 +5,45 @@ const AdminContext = createContext();
 
 export const useAdmin = () => useContext(AdminContext);
 
+const defaultGalleryItems = [
+  {
+    id: 1,
+    category: 'Interior',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDI7oEHudfULsJoieesJs6XeeLdXOjBKdrfqHJZ9NHpmckWVjxeP4pIuYE6-HjFNdumSACCzbLyt9lubnkPR8Lmorj0eXZ2X2gDTmL6C1IbySanM7_mYBb1JLgb_mq-1qZERPIDbMX5R3Bxx1QSlVX_aj1KOKo9gCyWaxN2HqNmzoA83uV7O2JSrc-5qOOmPZXmZo2WgM1S8RMtQekUi15cS_bbExrq33D_isOj9t53UnPy13BnhZRj',
+    title: 'Our Sun-Drenched Nook'
+  },
+  {
+    id: 2,
+    category: 'Food & Drink',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBi7yrbwtJvlnuLaNg-qgm1RAf04gBe-JJADogqsy-QBbk-O4iNRTzrtSSLqSfrdlanwf6b4zU_H5d2AlD-K8B1Rwtx0NGftTFHz_CAoSRA5yr0ZP5rHEJMybYaFwNgftVRkz3lrysnn3oGzKI-8OnHzAQ2KYiCLK0XtYB3VDMwlEgC5qTS0xJ1a3A9S8uLYELeloMPzfBruzRLPjR7DNmkmnhm5N523zPgq75DohE8TN1Lkw0WzPgK',
+    title: 'Morning Latte Ritual'
+  },
+  {
+    id: 3,
+    category: 'Interior',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5nkanXUSbxTGjJ91tMEn2u0Kljb80wLuBTzuJu3fIgagdSDkha2jefhIuNvQJh9D-Xo5EnSMWbRRPh5mzJzfwXYyjOXiw_FsYzK-8UaiwfoZ2lY0qB3b6tbUdHu4LpcplOZraxgLEEiwTRL0SNVjaNlJH15nqBvfqdKVxRzZ9NS8HvroILyW5w6AbmUxkFKu97Z23hlZhwEO_ho0kOxI2y-RUhHo9k-Tl9JF8bTojIUVqYMDwwpNh',
+    title: 'The Reading Lounge'
+  },
+  {
+    id: 4,
+    category: 'Events',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD9Ja8v01vdN6CD526WjvGeQRkHsI98EOZYqP89es0RzvVcRjGjMl2BgIrxMAXAA4FrbofV653TrLgdS2x4HNdfEiwmmMJLrBRgayW6MwL931iw6Zp1gedFCrHnGhUeAlAOMa8Mq_UyFZWWXM3OHHJOf3yIvKleqB0ybFF6bcECdIRDNsN4H9_vZ3xe65y-lOLiXKjH5HUC6PVAYZuQ6qzkuSbOrvkVLce7T3_u-MQmfCupJJOZjHnD',
+    title: 'Evening Tasting Series'
+  },
+  {
+    id: 5,
+    category: 'Food & Drink',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqmA0zyIvaO-4_OkGanPN1tJ9sKBkxVWLt0cCIizpJX9sZPbHjF8CnXg7BiBR4qP-QXiQa_6V9fLu6hDhBz8wp9CsZ7LA9R5TzIQBobyF2sX5rvPEymUJW6SrFDyWLb_ONgZcm31F6A-mDHQTdHff03tmJn6a-GQVwxXgVn71esGIYk57CMgK3B2MuXigQIPLEeu6WVJAEB5XcG9359urSA5awnnNLY00dAFhNPJSdYMANY02jmU9V',
+    title: 'Artisan Avocado Toast'
+  },
+  {
+    id: 6,
+    category: 'Interior',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCM_giIUxjjyHqcnjcGDGpyAKMuZBlUK8NvbtOqNDI4kOZ4G9td-1MQdhhVK_nnoECrm7hVYB4aJzWWwivsbvsEgc-wDi5o7izZTmMqDnwHekrbKEblbSXa47L7I1emiDyeLnb0RrF-ZRCpftPCnh8IyFUu-hsJ92CB5ZhadfNY97kHfJZipxL0rEgmKTz1lGrbMSW8dmTJM_V7kRrNBad_teD5QtsnvnLZZvoGP-syc71Re3PGNKrI',
+    title: 'The Hearth Station'
+  }
+];
+
 export const AdminProvider = ({ children }) => {
   const [authRole, setAuthRole] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -19,6 +58,30 @@ export const AdminProvider = ({ children }) => {
   const [tables, setTables] = useState([]);
   const [orders, setOrders] = useState([]);
   const [siteSettings, setSiteSettings] = useState(null);
+  const [galleryItems, setGalleryItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('brewhearth-gallery-items');
+      return saved ? JSON.parse(saved) : defaultGalleryItems;
+    } catch {
+      return defaultGalleryItems;
+    }
+  });
+  const [customQrImages, setCustomQrImages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('brewhearth-custom-qr-images');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('brewhearth-gallery-items', JSON.stringify(galleryItems));
+  }, [galleryItems]);
+
+  useEffect(() => {
+    localStorage.setItem('brewhearth-custom-qr-images', JSON.stringify(customQrImages));
+  }, [customQrImages]);
 
   const getSettings = async () => {
     const data = await apiCall('/settings');
@@ -267,6 +330,30 @@ export const AdminProvider = ({ children }) => {
     return hasUnpaidOrder ? 'occupied' : 'available';
   };
 
+  const addGalleryItem = (item) => {
+    setGalleryItems((prev) => [...prev, item]);
+  };
+
+  const updateGalleryItem = (id, updates) => {
+    setGalleryItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)));
+  };
+
+  const deleteGalleryItem = (id) => {
+    setGalleryItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const saveCustomQrImage = (tableId, image) => {
+    setCustomQrImages((prev) => ({ ...prev, [tableId]: image }));
+  };
+
+  const clearCustomQrImage = (tableId) => {
+    setCustomQrImages((prev) => {
+      const next = { ...prev };
+      delete next[tableId];
+      return next;
+    });
+  };
+
   return (
     <AdminContext.Provider value={{
       authChecked, isAdminAuthenticated, isKitchenAuthenticated, login, logout,
@@ -275,7 +362,9 @@ export const AdminProvider = ({ children }) => {
       menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
       getSettings, updateSettings, changePassword, siteSettings,
       tables, addTable, removeTable,
-      orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders
+      orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders,
+      galleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem,
+      customQrImages, saveCustomQrImage, clearCustomQrImage
     }}>
       {children}
     </AdminContext.Provider>

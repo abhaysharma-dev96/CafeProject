@@ -6,8 +6,10 @@ import { Plus, Trash2, Printer, ClipboardList } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const AdminQRCodes = () => {
-  const { tables, addTable, removeTable } = useAdmin();
+  const { tables, addTable, removeTable, customQrImages, saveCustomQrImage, clearCustomQrImage } = useAdmin();
   const [newTable, setNewTable] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [customQrUrl, setCustomQrUrl] = useState('');
   const [error, setError] = useState('');
   const qrRefs = useRef({});
 
@@ -47,6 +49,33 @@ const AdminQRCodes = () => {
       </html>
     `);
     printWindow.document.close();
+  };
+
+  const handleCustomQrUpload = (event, tableId) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      saveCustomQrImage(tableId, String(reader.result));
+      setEditingId(null);
+      setCustomQrUrl('');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const saveCustomQrUrl = (tableId) => {
+    const value = customQrUrl.trim();
+    if (!value) {
+      clearCustomQrImage(tableId);
+      setEditingId(null);
+      setCustomQrUrl('');
+      return;
+    }
+
+    saveCustomQrImage(tableId, value);
+    setEditingId(null);
+    setCustomQrUrl('');
   };
 
   return (
@@ -97,14 +126,49 @@ const AdminQRCodes = () => {
                 ref={(el) => { if (el) qrRefs.current[table.label] = el; }}
                 className="bg-white p-3 rounded-xl border border-primary/10 mb-4"
               >
-                <QRCodeSVG
-                  value={url}
-                  size={140}
-                  fgColor="#271310"
-                  bgColor="#ffffff"
-                />
+                {customQrImages[table._id] ? (
+                  <img src={customQrImages[table._id]} alt={`Custom QR for ${table.label}`} className="w-[140px] h-[140px] rounded-lg object-cover" />
+                ) : (
+                  <QRCodeSVG
+                    value={url}
+                    size={140}
+                    fgColor="#271310"
+                    bgColor="#ffffff"
+                  />
+                )}
               </div>
               <p className="text-[10px] text-secondary/40 break-all mb-4">{url}</p>
+
+              {editingId === table._id ? (
+                <div className="w-full space-y-2 mb-3">
+                  <input
+                    type="url"
+                    placeholder="Paste QR image URL"
+                    value={customQrUrl}
+                    onChange={(e) => setCustomQrUrl(e.target.value)}
+                    className="w-full bg-surface p-2 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary/10"
+                  />
+                  <div className="flex gap-2">
+                    <label className="flex-1 cursor-pointer rounded-lg bg-primary/10 text-primary text-center text-[10px] font-bold py-2">
+                      Upload File
+                      <input type="file" accept="image/*" onChange={(e) => handleCustomQrUpload(e, table._id)} className="hidden" />
+                    </label>
+                    <button onClick={() => saveCustomQrUrl(table._id)} className="flex-1 bg-primary text-white rounded-lg text-[10px] font-bold py-2">Save</button>
+                  </div>
+                  <button onClick={() => { setEditingId(null); setCustomQrUrl(''); }} className="w-full text-[10px] font-bold text-secondary">Cancel</button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setEditingId(table._id);
+                    setCustomQrUrl(customQrImages[table._id] || '');
+                  }}
+                  className="w-full bg-primary/5 text-primary py-2 rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all mb-2"
+                >
+                  {customQrImages[table._id] ? 'Edit Custom QR' : 'Upload Custom QR'}
+                </button>
+              )}
+
               <Link
                 to={`/admin/orders?table=${table.label}`}
                 className="w-full flex items-center justify-center gap-1 bg-primary/5 text-primary py-2 rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all mb-2"

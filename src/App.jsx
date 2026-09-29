@@ -19,6 +19,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import AdminReservations from './admin/AdminReservations';
 import AdminMessages from './admin/AdminMessages';
 import AdminMenu from './admin/AdminMenu';
+import AdminGallery from './admin/AdminGallery';
 import AdminOrders from './admin/AdminOrders';
 import AdminQRCodes from './admin/AdminQRCodes';
 import AdminSettings from './admin/AdminSettings';
@@ -63,6 +64,7 @@ function AppContent() {
             <Route path="reservations" element={<AdminReservations />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="menu" element={<AdminMenu />} />
+            <Route path="gallery" element={<AdminGallery />} />
             <Route path="qr-codes" element={<AdminQRCodes />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
