@@ -48,6 +48,8 @@ const AdminSettings = () => {
     update('logoUrl', '');
   };
 
+  const hasLogo = typeof form.logoUrl === 'string' && form.logoUrl.trim().length > 0;
+
   const save = async (event) => {
     event.preventDefault();
     setStatus('Saving...');
@@ -97,13 +99,13 @@ const AdminSettings = () => {
               <span>Logo Upload</span>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <input type="file" accept="image/*" onChange={chooseLogo} className="block text-sm" />
-                {form.logoUrl && (
+                {hasLogo && (
                   <button type="button" onClick={removeLogo} className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100">
                     Remove Logo
                   </button>
                 )}
               </div>
-              {form.logoUrl ? (
+              {hasLogo ? (
                 <img src={form.logoUrl} alt="Current logo" className="mt-3 h-16 w-auto rounded border border-primary/10 p-1" />
               ) : (
                 <p className="mt-3 text-xs font-normal text-secondary/70">No logo selected. The site will show only the website name.</p>

@@ -24,6 +24,7 @@ const Footer = () => {
       Object.entries(siteSettings || {}).filter(([, value]) => value !== '' && value !== null && value !== undefined)
     )
   };
+  const logoUrl = typeof settings.logoUrl === 'string' ? settings.logoUrl.trim() : '';
   const addressParts = settings.address.split(',').map((part) => part.trim()).filter(Boolean);
   const footerLinks = (settings.footerLinks || '').split('|').map((link) => link.trim()).filter(Boolean);
 
@@ -33,8 +34,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-center md:text-left">
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              {settings.logoUrl ? (
-                <img src={settings.logoUrl} alt={settings.websiteName} className="h-12 w-12 rounded-full object-cover border border-primary/10" />
+              {logoUrl ? (
+                <img src={logoUrl} alt={settings.websiteName} className="h-12 w-12 rounded-full object-cover border border-primary/10" />
               ) : null}
               <h2 className="font-headline-md text-2xl text-primary">{settings.websiteName}</h2>
             </div>

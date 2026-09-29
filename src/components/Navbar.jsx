@@ -12,7 +12,7 @@ const Navbar = () => {
   const { totalItems, setIsCartOpen, isCartOpen } = useCart();
   const { siteSettings } = useAdmin();
   const brandName = siteSettings?.websiteName || 'Brew & Hearth';
-  const logoUrl = siteSettings?.logoUrl;
+  const logoUrl = typeof siteSettings?.logoUrl === 'string' ? siteSettings.logoUrl.trim() : '';
 
   useEffect(() => {
     const handleScroll = () => {
