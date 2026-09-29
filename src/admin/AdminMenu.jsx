@@ -26,6 +26,17 @@ const AdminMenu = () => {
     setIsFormOpen(true);
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm((current) => ({ ...current, image: String(reader.result) }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -164,11 +175,30 @@ const AdminMenu = () => {
                   value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })}
                   className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
                 />
-                <input
-                  type="url" placeholder="Image URL"
-                  value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
-                />
+                <div className="space-y-3">
+                  <label className="block text-sm font-bold text-secondary">
+                    Upload Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="mt-2 block w-full text-sm text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-primary/10 file:px-4 file:py-2 file:text-sm file:font-bold file:text-primary"
+                    />
+                  </label>
+
+                  <input
+                    type="url" placeholder="Or paste image URL"
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
+                  />
+
+                  {form.image && (
+                    <div className="rounded-xl border border-primary/10 bg-surface p-2">
+                      <img src={form.image} alt="Menu preview" className="h-20 w-full rounded-lg object-cover" />
+                    </div>
+                  )}
+                </div>
                 {formError && (
                   <p className="text-sm font-bold text-on-error-container bg-error-container px-4 py-2 rounded-xl">{formError}</p>
                 )}
