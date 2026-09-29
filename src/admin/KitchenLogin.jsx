@@ -10,9 +10,15 @@ const KitchenLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError('');
+
     try {
       const role = await login(username, password);
       if (role === 'kitchen' || role === 'admin') {
@@ -20,7 +26,9 @@ const KitchenLogin = () => {
       }
     } catch (err) {
       setError(err.message || 'Unable to log in. Please try again.');
-      setTimeout(() => setError(''), 4000);
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,9 +77,10 @@ const KitchenLogin = () => {
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-4 rounded-2xl font-bold hover:shadow-xl active:scale-[0.98] transition-all"
+            disabled={isSubmitting}
+            className="w-full bg-primary text-white py-4 rounded-2xl font-bold hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Log In
+            {isSubmitting ? 'Logging In...' : 'Log In'}
           </button>
         </form>
 

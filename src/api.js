@@ -31,6 +31,9 @@ export const apiCall = async (endpoint, options = {}) => {
   }
 
   if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error('Too many requests. Please wait a few minutes and try again later.');
+    }
     throw new Error(data.message || 'Something went wrong. Please try again.');
   }
 
