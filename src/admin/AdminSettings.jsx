@@ -44,6 +44,10 @@ const AdminSettings = () => {
     reader.readAsDataURL(file);
   };
 
+  const removeLogo = () => {
+    update('logoUrl', '');
+  };
+
   const save = async (event) => {
     event.preventDefault();
     setStatus('Saving...');
@@ -89,11 +93,22 @@ const AdminSettings = () => {
       <form onSubmit={save} className="bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-primary/5 space-y-6">
         {loading ? <p className="text-secondary/60">Loading settings...</p> : (
           <>
-            <label className="block text-sm font-bold text-secondary">
-              Logo Upload
-              <input type="file" accept="image/*" onChange={chooseLogo} className="block mt-2 text-sm" />
-              {form.logoUrl && <img src={form.logoUrl} alt="Current logo" className="mt-3 h-16 w-auto rounded border border-primary/10 p-1" />}
-            </label>
+            <div className="block text-sm font-bold text-secondary">
+              <span>Logo Upload</span>
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <input type="file" accept="image/*" onChange={chooseLogo} className="block text-sm" />
+                {form.logoUrl && (
+                  <button type="button" onClick={removeLogo} className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100">
+                    Remove Logo
+                  </button>
+                )}
+              </div>
+              {form.logoUrl ? (
+                <img src={form.logoUrl} alt="Current logo" className="mt-3 h-16 w-auto rounded border border-primary/10 p-1" />
+              ) : (
+                <p className="mt-3 text-xs font-normal text-secondary/70">No logo selected. The site will show only the website name.</p>
+              )}
+            </div>
 
             <div className="grid md:grid-cols-2 gap-5">
               {[
