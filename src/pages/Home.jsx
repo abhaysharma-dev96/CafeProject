@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAdmin } from '../context/AdminContext';
 import HeroImage from "../assets/screen.png";
 
 const testimonials = [
@@ -12,6 +13,8 @@ const testimonials = [
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const { siteSettings } = useAdmin();
+  const brandName = siteSettings?.websiteName || 'Brew & Hearth';
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -94,7 +97,7 @@ const Home = () => {
                 <div className="flex justify-between items-center px-2">
                   <div>
                     <h3 className="font-headline-md text-2xl text-primary">{item.name}</h3>
-                    <p className="text-secondary/60 text-sm">Artisanal Brew & Hearth</p>
+                    <p className="text-secondary/60 text-sm">Artisanal {brandName}</p>
                   </div>
                   <span className="bg-primary/5 text-primary px-4 py-1 rounded-full font-bold">{item.price}</span>
                 </div>
@@ -131,7 +134,7 @@ const Home = () => {
             <span className="text-primary/60 font-bold tracking-widest text-sm uppercase mb-4 block">Our Story</span>
             <h2 className="font-headline-md text-5xl text-primary mb-8 leading-tight">Rooted in Craft, Designed for Connection</h2>
             <p className="text-secondary text-lg mb-10 leading-relaxed">
-              Brew & Hearth was born from a simple desire: to create a space that feels like a deep breath. We believe coffee is more than a beverage; it's a ritual, a pause in the momentum of the day.
+              {brandName} was born from a simple desire: to create a space that feels like a deep breath. We believe coffee is more than a beverage; it's a ritual, a pause in the momentum of the day.
             </p>
             <Link to="/about" className="flex items-center gap-2 font-bold text-primary group w-fit">
               Read Our Manifesto <span className="group-hover:translate-x-2 transition-transform">→</span>

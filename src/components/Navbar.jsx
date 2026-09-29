@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-
+import { useCart } from '../context/CartContext';import { useAdmin } from '../context/AdminContext';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { totalItems, setIsCartOpen, isCartOpen } = useCart();
+  const { siteSettings } = useAdmin();
+  const brandName = siteSettings?.websiteName || 'Brew & Hearth';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +49,7 @@ const Navbar = () => {
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 bg-surface/80 backdrop-blur-lg border-b border-primary/10 ${isScrolled ? 'py-4 shadow-sm' : 'py-6'}`}>
         <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex justify-between items-center">
           <Link to="/" className="font-headline-md text-2xl font-bold text-primary tracking-tight">
-            Brew & Hearth
+            {brandName}
           </Link>
 
           {/* Desktop Nav */}
@@ -99,7 +100,7 @@ const Navbar = () => {
             className="fixed inset-0 bg-surface z-[60] flex flex-col p-8"
           >
             <div className="flex justify-between items-center mb-12">
-              <span className="font-headline-md text-2xl font-bold text-primary">Brew & Hearth</span>
+              <span className="font-headline-md text-2xl font-bold text-primary">{brandName}</span>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-primary">
                 <X size={28} />
               </button>

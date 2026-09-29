@@ -4,9 +4,10 @@ import { LayoutDashboard, Calendar, MessageSquare, Coffee, LogOut, Menu as MenuI
 import { useAdmin } from '../context/AdminContext';
 
 const AdminLayout = () => {
-  const { authChecked, isAdminAuthenticated, logout, reservations, messages, orders } = useAdmin();
+  const { authChecked, isAdminAuthenticated, logout, reservations, messages, orders, siteSettings } = useAdmin();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+  const brandName = siteSettings?.websiteName || 'Brew & Hearth';
 
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -41,7 +42,7 @@ const AdminLayout = () => {
     <>
       <div className="p-6 border-b border-primary/5 flex justify-between items-center">
         <div>
-          <h1 className="font-headline-md text-xl text-primary">Brew & Hearth</h1>
+          <h1 className="font-headline-md text-xl text-primary">{brandName}</h1>
           <p className="text-xs text-secondary/50 font-bold uppercase tracking-widest mt-1">Admin Panel</p>
         </div>
         <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-secondary">
@@ -96,7 +97,7 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-surface">
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-primary/5 sticky top-0 z-30">
-        <h1 className="font-headline-md text-lg text-primary">Brew & Hearth Admin</h1>
+        <h1 className="font-headline-md text-lg text-primary">{brandName} Admin</h1>
         <button onClick={() => setIsSidebarOpen(true)} className="text-primary">
           <MenuIcon size={24} />
         </button>

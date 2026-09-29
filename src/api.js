@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || (
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : `${window.location.origin}/api`
+);
 
 // Wraps fetch: always sends cookies (for login sessions), always parses JSON,
 // and throws a readable error message if the backend returns a failure.

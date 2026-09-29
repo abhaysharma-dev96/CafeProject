@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext';
-import { AdminProvider } from './context/AdminContext';
+import { AdminProvider, useAdmin } from './context/AdminContext';
 
 import Home from './pages/Home';
 import Menu from './pages/Menu';
@@ -36,38 +36,50 @@ const SiteLayout = ({ children }) => (
   </div>
 );
 
+function AppContent() {
+  const { siteSettings } = useAdmin();
+
+  useEffect(() => {
+    document.title = siteSettings?.websiteName || 'Brew & Hearth';
+  }, [siteSettings]);
+
+  return (
+    <CartProvider>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          {/* Public site */}
+          <Route path="/" element={<SiteLayout><Home /></SiteLayout>} />
+          <Route path="/menu" element={<SiteLayout><Menu /></SiteLayout>} />
+          <Route path="/about" element={<SiteLayout><About /></SiteLayout>} />
+          <Route path="/gallery" element={<SiteLayout><Gallery /></SiteLayout>} />
+          <Route path="/reservations" element={<SiteLayout><Reservations /></SiteLayout>} />
+
+          {/* Admin */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="reservations" element={<AdminReservations />} />
+            <Route path="messages" element={<AdminMessages />} />
+            <Route path="menu" element={<AdminMenu />} />
+            <Route path="qr-codes" element={<AdminQRCodes />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+
+          {/* Kitchen */}
+          <Route path="/kitchen/login" element={<KitchenLogin />} />
+          <Route path="/kitchen" element={<KitchenView />} />
+        </Routes>
+      </Router>
+    </CartProvider>
+  );
+}
+
 function App() {
   return (
     <AdminProvider>
-      <CartProvider>
-        <Router>
-          <ScrollToTop />
-          <Routes>
-            {/* Public site */}
-            <Route path="/" element={<SiteLayout><Home /></SiteLayout>} />
-            <Route path="/menu" element={<SiteLayout><Menu /></SiteLayout>} />
-            <Route path="/about" element={<SiteLayout><About /></SiteLayout>} />
-            <Route path="/gallery" element={<SiteLayout><Gallery /></SiteLayout>} />
-            <Route path="/reservations" element={<SiteLayout><Reservations /></SiteLayout>} />
-
-            {/* Admin */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="reservations" element={<AdminReservations />} />
-              <Route path="messages" element={<AdminMessages />} />
-              <Route path="menu" element={<AdminMenu />} />
-              <Route path="qr-codes" element={<AdminQRCodes />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
-
-            {/* Kitchen */}
-            <Route path="/kitchen/login" element={<KitchenLogin />} />
-            <Route path="/kitchen" element={<KitchenView />} />
-          </Routes>
-        </Router>
-      </CartProvider>
+      <AppContent />
     </AdminProvider>
   );
 }
