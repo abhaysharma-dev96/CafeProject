@@ -6,6 +6,7 @@ import { useAdmin } from '../context/AdminContext';
 const Footer = () => {
   const { siteSettings } = useAdmin();
   const defaults = {
+    logoUrl: '',
     websiteName: 'Brew & Hearth',
     footerText: 'A space for mindful consumption and deliberate pauses.',
     instagramUrl: '#',
@@ -31,7 +32,12 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-center md:text-left">
           <div className="col-span-1 md:col-span-1">
-            <h2 className="font-headline-md text-2xl text-primary mb-4">{settings.websiteName}</h2>
+            <div className="flex items-center gap-3 mb-4">
+              {settings.logoUrl ? (
+                <img src={settings.logoUrl} alt={settings.websiteName} className="h-12 w-12 rounded-full object-cover border border-primary/10" />
+              ) : null}
+              <h2 className="font-headline-md text-2xl text-primary">{settings.websiteName}</h2>
+            </div>
             <p className="text-secondary/60 text-sm leading-relaxed">
               {settings.footerText}
             </p>

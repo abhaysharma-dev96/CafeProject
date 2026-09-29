@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAdmin } from '../context/AdminContext';
 
 const Gallery = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const { siteSettings } = useAdmin();
+  const brandName = siteSettings?.websiteName || 'Brew & Hearth';
 
   const categories = ['All', 'Interior', 'Food & Drink', 'Events'];
 
@@ -93,7 +96,7 @@ const Gallery = () => {
             Our Visual Story
           </motion.h1>
           <p className="text-secondary/70 max-w-2xl mx-auto leading-relaxed">
-            Explore the warmth, craftsmanship, and community that make up the essence of Artisanal Brew & Hearth.
+            Explore the warmth, craftsmanship, and community that make up the essence of Artisanal {brandName}.
           </p>
         </header>
 
