@@ -99,9 +99,18 @@ const AdminLayout = () => {
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-primary/5 sticky top-0 z-30">
         <h1 className="font-headline-md text-lg text-primary">{brandName} Admin</h1>
-        <button onClick={() => setIsSidebarOpen(true)} className="text-primary">
-          <MenuIcon size={24} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={logout}
+            className="flex items-center gap-1 rounded-lg px-2 py-2 text-xs font-bold text-secondary hover:bg-error-container hover:text-on-error-container"
+            aria-label="Log out"
+          >
+            <LogOut size={17} /> Log Out
+          </button>
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primary" aria-label="Open admin menu">
+            <MenuIcon size={24} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile sidebar overlay */}
