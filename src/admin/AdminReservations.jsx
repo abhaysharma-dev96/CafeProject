@@ -16,10 +16,11 @@ const AdminReservations = () => {
         </div>
       ) : (
         <div className="bg-white rounded-[32px] shadow-sm border border-primary/5 overflow-x-auto">
-          <table className="w-full text-sm min-w-[700px]">
+          <table className="w-full text-sm min-w-[850px]">
             <thead>
               <tr className="text-left text-secondary/50 text-xs uppercase tracking-widest border-b border-primary/5">
                 <th className="p-5">Name</th>
+                <th className="p-5">Contact</th>
                 <th className="p-5">Date & Time</th>
                 <th className="p-5">Party</th>
                 <th className="p-5">Notes</th>
@@ -38,6 +39,10 @@ const AdminReservations = () => {
                     className="border-b border-primary/5 last:border-0"
                   >
                     <td className="p-5 font-bold text-primary">{r.name}</td>
+                    <td className="p-5 text-secondary">
+                      {r.phone ? <a href={`tel:${r.phone}`} className="block hover:text-primary">{r.phone}</a> : <span className="block text-secondary/40">—</span>}
+                      {r.email ? <a href={`mailto:${r.email}`} className="block text-xs hover:text-primary break-all">{r.email}</a> : null}
+                    </td>
                     <td className="p-5 text-secondary">{r.date} — {r.time}</td>
                     <td className="p-5 text-secondary">{r.partySize}</td>
                     <td className="p-5 text-secondary/60 max-w-[200px] truncate">{r.notes || '—'}</td>

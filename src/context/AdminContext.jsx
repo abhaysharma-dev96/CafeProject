@@ -56,6 +56,7 @@ export const AdminProvider = ({ children }) => {
 
   const [reservations, setReservations] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [menuLoading, setMenuLoading] = useState(true);
   const [menuError, setMenuError] = useState('');
@@ -131,6 +132,7 @@ export const AdminProvider = ({ children }) => {
     if (isAdminAuthenticated) {
       refreshReservations();
       refreshMessages();
+      refreshReviews();
     }
     if (isKitchenAuthenticated) {
       refreshOrders();
@@ -156,6 +158,7 @@ export const AdminProvider = ({ children }) => {
       if (document.visibilityState !== 'visible') return;
       refreshReservations();
       refreshMessages();
+      refreshReviews();
     };
     const interval = setInterval(tick, ADMIN_POLL_MS);
     return () => clearInterval(interval);
@@ -179,6 +182,7 @@ export const AdminProvider = ({ children }) => {
     setAuthRole(null);
     setReservations([]);
     setMessages([]);
+    setReviews([]);
     setOrders([]);
   };
 
@@ -235,6 +239,35 @@ export const AdminProvider = ({ children }) => {
   const deleteMessage = async (id) => {
     await apiCall(`/messages/${id}`, { method: 'DELETE' });
     setMessages((prev) => prev.filter((m) => m._id !== id));
+  };
+
+  // ---- Reviews ----
+  const refreshReviews = async () => {
+    try {
+      const data = await apiCall('/reviews/all');
+      setReviews((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
+    } catch (err) { /* not authed yet */ }
+  };
+
+  // Public: customer submits a review (stays pending until admin approves)
+  const addReview = async (formData) => {
+    return apiCall('/reviews', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    });
+  };
+
+  const updateReviewStatus = async (id, status) => {
+    const updated = await apiCall(`/reviews/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status })
+    });
+    setReviews((prev) => prev.map((r) => (r._id === id ? updated : r)));
+  };
+
+  const deleteReview = async (id) => {
+    await apiCall(`/reviews/${id}`, { method: 'DELETE' });
+    setReviews((prev) => prev.filter((r) => r._id !== id));
   };
 
   // ---- Menu ----
@@ -366,6 +399,7 @@ export const AdminProvider = ({ children }) => {
       authChecked, isAdminAuthenticated, isKitchenAuthenticated, login, logout,
       reservations, addReservation, updateReservationStatus, deleteReservation, refreshReservations,
       messages, addMessage, markMessageRead, deleteMessage, refreshMessages,
+      reviews, addReview, updateReviewStatus, deleteReview, refreshReviews,
       menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
       getSettings, updateSettings, changePassword, siteSettings,
       tables, addTable, removeTable,

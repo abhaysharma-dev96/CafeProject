@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Star } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { apiCall } from '../api';
 import HeroImage from "../assets/screen.png";
 
 const testimonials = [
@@ -15,13 +17,27 @@ const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const { siteSettings } = useAdmin();
   const brandName = siteSettings?.websiteName || 'Brew & Hearth';
+  const [approvedReviews, setApprovedReviews] = useState([]);
+
+  // Approved customer reviews (managed from Admin > Reviews). Falls back to the sample quotes if none yet.
+  useEffect(() => {
+    apiCall('/reviews')
+      .then((data) => Array.isArray(data) && setApprovedReviews(data))
+      .catch(() => {});
+  }, []);
+
+  const slides = approvedReviews.length > 0
+    ? approvedReviews.map((r) => ({ quote: r.comment, author: `— ${r.name}`, rating: r.rating }))
+    : testimonials;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % testimonials.length);
+      setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [slides.length]);
+
+  const current = slides[activeSlide % slides.length];
 
   return (
     <div className="overflow-hidden">
@@ -157,16 +173,23 @@ const Home = () => {
                 transition={{ duration: 0.5 }}
               >
                 <p className="font-headline-md text-2xl md:text-3xl text-primary mb-6 leading-snug">
-                  "{testimonials[activeSlide].quote}"
+                  "{current.quote}"
                 </p>
+                {current.rating ? (
+                  <div className="flex justify-center gap-1 mb-3">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star key={n} size={18} className={n <= current.rating ? 'fill-amber-400 text-amber-400' : 'text-primary/20'} />
+                    ))}
+                  </div>
+                ) : null}
                 <div className="text-secondary text-sm uppercase tracking-wider font-bold">
-                  {testimonials[activeSlide].author}
+                  {current.author}
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
           <div className="flex justify-center gap-2 mt-10">
-            {testimonials.map((_, i) => (
+            {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setActiveSlide(i)}

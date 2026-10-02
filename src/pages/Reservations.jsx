@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, CheckCircle2, AlertCircle, Star } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const timeSlots = [
@@ -16,13 +16,16 @@ const timeSlots = [
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const namePattern = /^[A-Za-z\s'-]{2,}$/;
+const phonePattern = /^\+?[0-9\s-]{7,16}$/;
 
 const Reservations = () => {
   const todayStr = new Date().toISOString().split('T')[0];
-  const { addReservation, addMessage } = useAdmin();
+  const { addReservation, addMessage, addReview } = useAdmin();
 
   const [reservation, setReservation] = useState({
     name: '',
+    phone: '',
+    email: '',
     date: '',
     time: '',
     partySize: 2,
@@ -30,6 +33,10 @@ const Reservations = () => {
   });
   const [reservationStatus, setReservationStatus] = useState(null); // null | 'success' | 'error'
   const [reservationError, setReservationError] = useState('');
+
+  const [review, setReview] = useState({ name: '', rating: 0, comment: '' });
+  const [reviewStatus, setReviewStatus] = useState(null);
+  const [reviewError, setReviewError] = useState('');
 
   const [contact, setContact] = useState({ name: '', email: '', subject: '', message: '' });
   const [contactStatus, setContactStatus] = useState(null);
@@ -39,6 +46,18 @@ const Reservations = () => {
     e.preventDefault();
     if (!reservation.name || !namePattern.test(reservation.name.trim())) {
       setReservationError('Please enter your name.');
+      setReservationStatus('error');
+      setTimeout(() => setReservationStatus(null), 3000);
+      return;
+    }
+    if (!phonePattern.test(reservation.phone.trim())) {
+      setReservationError('Please enter a valid phone number.');
+      setReservationStatus('error');
+      setTimeout(() => setReservationStatus(null), 3000);
+      return;
+    }
+    if (!emailPattern.test(reservation.email.trim())) {
+      setReservationError('Please enter a valid email address.');
       setReservationStatus('error');
       setTimeout(() => setReservationStatus(null), 3000);
       return;
@@ -58,12 +77,32 @@ const Reservations = () => {
     try {
       await addReservation({ ...reservation });
       setReservationStatus('success');
-      setReservation({ name: '', date: '', time: '', partySize: 2, notes: '' });
+      setReservation({ name: '', phone: '', email: '', date: '', time: '', partySize: 2, notes: '' });
       setTimeout(() => setReservationStatus(null), 4000);
     } catch (err) {
       setReservationError(err.message || 'Could not save your reservation. Please try again.');
       setReservationStatus('error');
       setTimeout(() => setReservationStatus(null), 4000);
+    }
+  };
+
+  const showReview = (status, error = '') => {
+    setReviewError(error);
+    setReviewStatus(status);
+    setTimeout(() => setReviewStatus(null), status === 'success' ? 5000 : 3500);
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!namePattern.test(review.name.trim())) return showReview('error', 'Please enter your name (letters only).');
+    if (!review.rating) return showReview('error', 'Please select a star rating.');
+    if (review.comment.trim().length < 10) return showReview('error', 'Review should be at least 10 characters.');
+    try {
+      await addReview({ ...review, name: review.name.trim(), comment: review.comment.trim() });
+      setReview({ name: '', rating: 0, comment: '' });
+      showReview('success');
+    } catch (err) {
+      showReview('error', err.message || 'Could not submit your review. Please try again.');
     }
   };
 
@@ -144,6 +183,32 @@ const Reservations = () => {
                   onChange={(e) => setReservation({ ...reservation, name: e.target.value })}
                   className="w-full bg-surface p-4 rounded-2xl border border-primary/5 outline-none focus:ring-2 focus:ring-primary/10" 
                 />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-secondary/60 ml-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    inputMode="tel"
+                    placeholder="e.g. +91 98765 43210"
+                    value={reservation.phone}
+                    onChange={(e) => setReservation({ ...reservation, phone: e.target.value })}
+                    className="w-full bg-surface p-4 rounded-2xl border border-primary/5 outline-none focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-secondary/60 ml-1">Email</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="you@example.com"
+                    value={reservation.email}
+                    onChange={(e) => setReservation({ ...reservation, email: e.target.value })}
+                    className="w-full bg-surface p-4 rounded-2xl border border-primary/5 outline-none focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -356,6 +421,71 @@ const Reservations = () => {
             </motion.a>
           </div>
         </div>
+
+        {/* Review Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-16 max-w-2xl mx-auto bg-white p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] shadow-sm border border-primary/5"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Star className="text-primary" />
+            <h2 className="font-headline-md text-3xl text-primary">Share Your Experience</h2>
+          </div>
+          <p className="text-secondary/70 text-sm mb-8">Visited us? Leave a review. It will appear on our home page after approval.</p>
+
+          <form className="space-y-6" onSubmit={handleReviewSubmit} noValidate>
+            <input
+              type="text"
+              placeholder="Your Name"
+              maxLength={60}
+              value={review.name}
+              onChange={(e) => setReview({ ...review, name: e.target.value })}
+              className="w-full bg-surface p-4 rounded-2xl border border-primary/5 outline-none focus:ring-2 focus:ring-primary/10"
+            />
+            <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={review.rating === n}
+                  aria-label={`${n} star${n > 1 ? 's' : ''}`}
+                  onClick={() => setReview({ ...review, rating: n })}
+                  className="p-1 transition-transform hover:scale-110"
+                >
+                  <Star size={30} className={n <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-secondary/25'} />
+                </button>
+              ))}
+            </div>
+            <textarea
+              rows="4"
+              maxLength={500}
+              placeholder="Tell us about your visit..."
+              value={review.comment}
+              onChange={(e) => setReview({ ...review, comment: e.target.value })}
+              className="w-full bg-surface p-4 rounded-2xl border border-primary/5 outline-none focus:ring-2 focus:ring-primary/10"
+            ></textarea>
+            <button type="submit" className="w-full bg-primary text-white py-4 rounded-2xl font-bold hover:shadow-xl active:scale-[0.98] transition-all">
+              Submit Review
+            </button>
+          </form>
+
+          <AnimatePresence>
+            {reviewStatus && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className={`mt-4 p-4 rounded-2xl flex items-center gap-2 text-sm font-bold ${reviewStatus === 'success' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : 'bg-error-container text-on-error-container'}`}
+              >
+                {reviewStatus === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+                {reviewStatus === 'success' ? 'Thank you! Your review will appear after approval.' : reviewError}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.section>
       </div>
     </div>
   );

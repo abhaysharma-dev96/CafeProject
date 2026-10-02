@@ -6,6 +6,10 @@ const emptySettings = {
   logoUrl: '',
   websiteName: 'Brew & Hearth',
   instagramUrl: 'https://instagram.com/brewandhearth',
+  facebookUrl: '',
+  twitterUrl: '',
+  linkedinUrl: '',
+  quickLinks: 'Home|/\nMenu|/menu\nAbout|/about\nGallery|/gallery\nReservations|/reservations',
   whatsappNumber: '+15551234567',
   whatsappEnabled: true,
   whatsappMessage: 'Hello, I would like to know more about Brew & Hearth.',
@@ -96,7 +100,7 @@ const AdminSettings = () => {
         {loading ? <p className="text-secondary/60">Loading settings...</p> : (
           <>
             <div className="block text-sm font-bold text-secondary">
-              <span>Logo Upload</span>
+              <span>Logo (shown in navbar and footer)</span>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <input type="file" accept="image/*" onChange={chooseLogo} className="block text-sm" />
                 {hasLogo && (
@@ -116,6 +120,9 @@ const AdminSettings = () => {
               {[
                 ['websiteName', 'Website Name'],
                 ['instagramUrl', 'Instagram URL'],
+                ['facebookUrl', 'Facebook URL'],
+                ['twitterUrl', 'X (Twitter) URL'],
+                ['linkedinUrl', 'LinkedIn URL'],
                 ['whatsappNumber', 'WhatsApp Number'],
                 ['shopOpenTime', 'Shop Open Time'],
                 ['shopCloseTime', 'Shop Close Time'],
@@ -142,7 +149,7 @@ const AdminSettings = () => {
             {[
               ['address', 'Address'],
               ['footerText', 'Footer Text'],
-              ['footerLinks', 'Footer Links'],
+              ['quickLinks', 'Footer Quick Links (one per line: Label|/page, e.g. Menu|/menu)'],
               ['copyright', 'Copyright']
             ].map(([key, label]) => (
               <label key={key} className="block text-sm font-bold text-secondary">
