@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Plus, Minus, X, Maximize2, UtensilsCrossed } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAdmin } from '../context/AdminContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const Menu = () => {
   const [activeTab, setActiveTab] = useState('Coffee');
@@ -11,7 +12,7 @@ const Menu = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('default');
   const [selectedImage, setSelectedImage] = useState(null);
-  const { addToCart, removeFromCart, getQuantity, tableId, setTableId, setIsCartOpen } = useCart();
+  const { addToCart, removeFromCart, getQuantity, tableId, setTableId } = useCart();
   const { menuItems, menuLoading, menuError, refreshMenu } = useAdmin();
   const [searchParams] = useSearchParams();
   const categories = ['Coffee', 'Tea', 'Snacks', 'Desserts'];
@@ -190,7 +191,7 @@ const Menu = () => {
                   <div className="px-2">
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-headline-md text-2xl text-primary">{item.name}</h3>
-                      <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
+                      <span className="font-bold text-primary">{formatPrice(item.price)}</span>
                     </div>
                     <p className="text-secondary/70 text-sm mb-6 leading-relaxed">{item.desc}</p>
                     <div className="flex justify-between items-center">
@@ -255,7 +256,7 @@ const Menu = () => {
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60 to-transparent">
                   <h4 className="font-headline-md text-3xl text-white">{selectedImage.name}</h4>
-                  <p className="text-white/70 mt-1">${selectedImage.price.toFixed(2)}</p>
+                  <p className="text-white/70 mt-1">{formatPrice(selectedImage.price)}</p>
                 </div>
               </motion.div>
             </motion.div>

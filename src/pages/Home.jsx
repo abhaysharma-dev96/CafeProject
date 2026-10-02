@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import { apiCall } from '../api';
-import HeroImage from "../assets/screen.png";
 
 const testimonials = [
   { quote: "The perfect synthesis of a meticulous coffee program and an environment that instantly lowers your cortisol. It's my daily sanctuary.", author: '— Sarah T., Designer' },
@@ -95,9 +94,9 @@ const Home = () => {
           
           <div className="grid md:grid-cols-3 gap-12">
             {[
-              { name: 'Lavender Latte', price: '$6.50', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDzZ_iKfZ_J1tt1iWLH_IZJ-6CyqErAhV87e2Lk7KEeLaWFx7ELPeRJw778EvVLFyH8Kh4sD2iQLiDaurO1PdTnqRZZ9K2_hwSOmrZLuvElSdmx-2JIc3dXbuNkk7Sl73Ux_l7N-tUnOZAiuUZU3dIki4bkk-XLA_E301VqirBwPxUHyGPqvNJxTiLL221OesNy4HiDVmgDYxcmp_cnS82Qb-RfFTJZLqsuGEQnE6H5aLGv-a-0D1-d' },
-              { name: 'Smoked Mocha', price: '$7.00', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAC52rFZiqVnhDOPLU3I0p-GYssiCQzPXWQPNIh5_qgZI80Y5ReyCEpvxGmiwos0BQll4l9e86kYqgG3Cfo7AqE_612yNL8f19kXvPnI5aHuH6s48MYubaakVR4AGg_fjBbGUZGw6bgx9I3My4IqY7yaqYGoQrsEEWrt0UGDtCv43hfafeLiVTrRciyW5C_cwlE3kCOanCD4EKgCPD2c3OFtc6BR0cPkw4Y4G7bHD3LOyuwyFP5lR5e' },
-              { name: 'Matcha Rose', price: '$6.50', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5U6PR1QCkvU-igfu9PpIq8BNBRGZIHDsGXhnsVOZ1Mr4YJJEjvdtnTi8stcI9ZhRdc5QDcLVX108DYMnU9KgoEo7q1qzZyqXzdtvUL-gkfKcIiYj78wqmUxcipa90p-TvAZK3TRNnrjMAbgv4hnROEab91cs_UeI9Is4S7c-slx8NO2Gn8U-0tMGrhYkl5GJ3Bzz1CQqhJholLEKjWV-fTSIZGsVJzVHayOQnrXkGb1W5As3qe9hT' }
+              { name: 'Lavender Latte', price: '₹250', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDzZ_iKfZ_J1tt1iWLH_IZJ-6CyqErAhV87e2Lk7KEeLaWFx7ELPeRJw778EvVLFyH8Kh4sD2iQLiDaurO1PdTnqRZZ9K2_hwSOmrZLuvElSdmx-2JIc3dXbuNkk7Sl73Ux_l7N-tUnOZAiuUZU3dIki4bkk-XLA_E301VqirBwPxUHyGPqvNJxTiLL221OesNy4HiDVmgDYxcmp_cnS82Qb-RfFTJZLqsuGEQnE6H5aLGv-a-0D1-d' },
+              { name: 'Smoked Mocha', price: '₹280', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAC52rFZiqVnhDOPLU3I0p-GYssiCQzPXWQPNIh5_qgZI80Y5ReyCEpvxGmiwos0BQll4l9e86kYqgG3Cfo7AqE_612yNL8f19kXvPnI5aHuH6s48MYubaakVR4AGg_fjBbGUZGw6bgx9I3My4IqY7yaqYGoQrsEEWrt0UGDtCv43hfafeLiVTrRciyW5C_cwlE3kCOanCD4EKgCPD2c3OFtc6BR0cPkw4Y4G7bHD3LOyuwyFP5lR5e' },
+              { name: 'Matcha Rose', price: '₹260', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5U6PR1QCkvU-igfu9PpIq8BNBRGZIHDsGXhnsVOZ1Mr4YJJEjvdtnTi8stcI9ZhRdc5QDcLVX108DYMnU9KgoEo7q1qzZyqXzdtvUL-gkfKcIiYj78wqmUxcipa90p-TvAZK3TRNnrjMAbgv4hnROEab91cs_UeI9Is4S7c-slx8NO2Gn8U-0tMGrhYkl5GJ3Bzz1CQqhJholLEKjWV-fTSIZGsVJzVHayOQnrXkGb1W5As3qe9hT' }
             ].map((item, i) => (
               <motion.div 
                 key={i}

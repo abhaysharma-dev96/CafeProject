@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Mail, MailOpen } from 'lucide-react';
+import { Trash2, MailOpen } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const AdminMessages = () => {

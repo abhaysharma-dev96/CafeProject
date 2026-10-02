@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, ShoppingBag, UtensilsCrossed, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAdmin } from '../context/AdminContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const CartDrawer = () => {
   const { cartItems, addToCart, removeFromCart, clearCart, totalPrice, isCartOpen, setIsCartOpen, tableId } = useCart();
@@ -114,7 +115,7 @@ const CartDrawer = () => {
                         >
                           <div>
                             <h4 className="font-bold text-primary">{item.name}</h4>
-                            <p className="text-secondary/60 text-sm">${item.price.toFixed(2)} each</p>
+                            <p className="text-secondary/60 text-sm">{formatPrice(item.price)} each</p>
                           </div>
                           <div className="flex items-center gap-3 bg-white p-1 rounded-full border border-primary/10">
                             <button
@@ -141,7 +142,7 @@ const CartDrawer = () => {
                   <div className="p-6 border-t border-primary/10 space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-secondary font-bold">Total</span>
-                      <span className="font-headline-md text-2xl text-primary">${totalPrice.toFixed(2)}</span>
+                      <span className="font-headline-md text-2xl text-primary">{formatPrice(totalPrice)}</span>
                     </div>
                     {tableId ? (
                       <>

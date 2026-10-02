@@ -1,8 +1,9 @@
 import React from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UtensilsCrossed, Clock, ChefHat, CheckCircle2, Trash2, X, Wallet } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const statusFlow = ['pending', 'preparing', 'ready', 'delivered'];
 const statusConfig = {
@@ -58,13 +59,13 @@ const AdminOrders = () => {
           {order.items.map((item, i) => (
             <div key={i} className="flex justify-between text-sm">
               <span className="text-secondary">{item.qty} × {item.name}</span>
-              <span className="text-secondary/60">${(item.price * item.qty).toFixed(2)}</span>
+              <span className="text-secondary/60">{formatPrice(item.price * item.qty)}</span>
             </div>
           ))}
         </div>
 
         <div className="flex justify-between items-center border-t border-primary/5 pt-4">
-          <span className="font-bold text-primary">${order.total.toFixed(2)}</span>
+          <span className="font-bold text-primary">{formatPrice(order.total)}</span>
           <div className="flex gap-2">
             {next && (
               <button

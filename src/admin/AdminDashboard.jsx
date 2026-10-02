@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MessageSquare, Coffee, Clock, UtensilsCrossed, Armchair } from 'lucide-react';
+import { MessageSquare, Clock, UtensilsCrossed, Armchair } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const AdminDashboard = () => {
-  const { reservations, messages, menuItems, orders, tables } = useAdmin();
+  const { reservations, messages, orders, tables } = useAdmin();
 
   const pendingCount = reservations.filter((r) => r.status === 'pending').length;
   const unreadCount = messages.filter((m) => !m.read).length;
@@ -49,7 +50,7 @@ const AdminDashboard = () => {
                 <div key={o._id} className="flex justify-between items-center text-sm border-b border-primary/5 pb-3 last:border-0">
                   <div>
                     <p className="font-bold text-primary">Table {o.table || '—'}</p>
-                    <p className="text-secondary/60">{o.items.length} item{o.items.length !== 1 ? 's' : ''} — ${o.total.toFixed(2)}</p>
+                    <p className="text-secondary/60">{o.items.length} item{o.items.length !== 1 ? 's' : ''} — {formatPrice(o.total)}</p>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-bold capitalize bg-primary-container text-on-primary-container">
                     {o.status}

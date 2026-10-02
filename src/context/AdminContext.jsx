@@ -165,16 +165,12 @@ export const AdminProvider = ({ children }) => {
   }, [authRole]);
 
   const login = async (username, password) => {
-    try {
-      const data = await apiCall('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ username, password })
-      });
-      setAuthRole(data.role);
-      return data.role;
-    } catch (err) {
-      throw err;
-    }
+    const data = await apiCall('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password })
+    });
+    setAuthRole(data.role);
+    return data.role;
   };
 
   const logout = async () => {
@@ -191,7 +187,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const data = await apiCall('/reservations');
       setReservations((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
-    } catch (err) { /* silently ignore, likely not authed */ }
+    } catch { /* silently ignore, likely not authed */ }
   };
 
   const addReservation = async (formData) => {
@@ -220,7 +216,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const data = await apiCall('/messages');
       setMessages((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
-    } catch (err) { /* not authed yet */ }
+    } catch { /* not authed yet */ }
   };
 
   const addMessage = async (formData) => {
@@ -246,7 +242,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const data = await apiCall('/reviews/all');
       setReviews((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
-    } catch (err) { /* not authed yet */ }
+    } catch { /* not authed yet */ }
   };
 
   // Public: customer submits a review (stays pending until admin approves)
@@ -310,7 +306,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const data = await apiCall('/tables');
       setTables((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
-    } catch (err) { /* ignore */ }
+    } catch { /* ignore */ }
   };
 
   const addTable = async (label) => {
@@ -336,7 +332,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const data = await apiCall('/orders');
       setOrders((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data));
-    } catch (err) { /* not authed yet */ }
+    } catch { /* not authed yet */ }
   };
 
   const addOrder = async (data) => {

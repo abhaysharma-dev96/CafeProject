@@ -20,7 +20,8 @@ const phonePattern = /^\+?[0-9\s-]{7,16}$/;
 
 const Reservations = () => {
   const todayStr = new Date().toISOString().split('T')[0];
-  const { addReservation, addMessage, addReview } = useAdmin();
+  const { addReservation, addMessage, addReview, siteSettings } = useAdmin();
+  const mapAddress = siteSettings?.address || '123 Artisan Alley, Portland, OR 97209';
 
   const [reservation, setReservation] = useState({
     name: '',
@@ -381,7 +382,7 @@ const Reservations = () => {
 
             {/* Map Preview */}
             <motion.a 
-              href="https://www.google.com/maps/search/?api=1&query=123+Artisan+Alley+Portland+OR+97209"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapAddress)}`}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { formatPrice } from '../utils/formatPrice';
 
 const emptyForm = { name: '', price: '', category: 'Coffee', desc: '', tags: '', image: '' };
 
@@ -100,7 +101,7 @@ const AdminMenu = () => {
             </div>
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-bold text-primary">{item.name}</h3>
-              <span className="text-primary font-bold">${item.price.toFixed(2)}</span>
+              <span className="text-primary font-bold">{formatPrice(item.price)}</span>
             </div>
             <p className="text-xs text-secondary/50 uppercase tracking-wider font-bold mb-3">{item.category}</p>
             <div className="flex justify-end gap-2">
@@ -154,7 +155,7 @@ const AdminMenu = () => {
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <input
-                    type="number" step="0.01" required placeholder="Price"
+                    type="number" step="0.01" required placeholder="Price (₹)"
                     value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
                     className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
                   />

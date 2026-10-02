@@ -15,7 +15,7 @@ export const apiCall = async (endpoint, options = {}) => {
       headers: { 'Content-Type': 'application/json' },
       ...options
     });
-  } catch (err) {
+  } catch {
     throw new Error('Backend is not reachable right now. Please check that the server is running and try again.');
   }
 
