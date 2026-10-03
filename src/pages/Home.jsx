@@ -41,13 +41,13 @@ const Home = () => {
     <div className="overflow-hidden">
       {/* Hero */}
       <section className="min-h-screen relative flex items-center justify-center pt-20">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIGUirKF9592Q7qIY0ACK93vmB-cwYnC_aYf36U81Bod2cJ30xMZbZwxe16YuLde6Db9I59gKsRo2DPd0YYI0lJgXLomAeDyDO477OfxZsv3WSQbitn84dpLkkJu5SHBWq05MHTp6upAUKaok9vuDy1svH3VE5kcERZrrIabaUzQ3uCf2DhB1AydBF7oZHlzZgdXgVGmTwC-f1NeukWXcaZPxn41b1nEt8sRQCQ96Fu5bYLnVU4X9J" 
             alt="Coffee" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-[1.2]"
           />
-          <div className="absolute inset-0 bg-surface/40 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-surface/45" />
         </div>
         
         <div className="relative z-10 text-center max-w-4xl px-6">
@@ -81,6 +81,9 @@ const Home = () => {
             </Link>
           </motion.div>
         </div>
+
+        {/* Call / WhatsApp: bottom-right corner of the hero (managed in Admin > Settings) */}
+        <ContactButtons className="absolute z-20 bottom-5 right-5 sm:bottom-6 sm:right-6" />
       </section>
 
       {/* Featured Items (from the menu, managed in Admin > Menu) */}
@@ -136,7 +139,6 @@ const Home = () => {
             className="relative rounded-[32px] overflow-hidden shadow-xl w-full max-w-[440px] aspect-[4/5] mx-auto md:justify-self-center"
           >
             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgWHFEsgHrEou5Sj5ixEiv07587PhkkXV1h2F0OMQBHqvOE8wglJ1ecZQHgVG0kFArYImQDg51Fi0KVvThfzw09SRnVNZEzOgJ3Bx2jLrW5x3CaiPFk3AyoPBgEi90mEgOUP0jzULKLi2HWJYeJ7U2hj_r31gh30fRwVxgOgSxZLRJWPGrU9kPAnXhUXEMgWEL85iNprLG6zGMXOsrMaZ3WAAhTZIQ40XbvgcTJ8LgzKGEDh-dRdlN" alt="Cafe Interior" className="w-full h-full object-cover" />
-            <ContactButtons className="absolute bottom-4 right-4" />
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
