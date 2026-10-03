@@ -168,7 +168,7 @@ const Home = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.5 }}
               >
-                <p className="font-headline-md text-2xl md:text-3xl text-primary mb-6 leading-snug">
+                <p className={`font-headline-md text-primary mb-6 leading-snug break-words ${current.quote.length > 220 ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'}`}>
                   "{current.quote}"
                 </p>
                 {current.rating ? (

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import FloatingContact from './components/FloatingContact';
 import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext';
 import { AdminProvider, useAdmin } from './context/AdminContext';
@@ -35,6 +36,7 @@ const SiteLayout = ({ children }) => (
     <main>{children}</main>
     <Footer />
     <CartDrawer />
+    <FloatingContact />
   </div>
 );
 
