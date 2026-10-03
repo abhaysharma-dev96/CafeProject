@@ -5,6 +5,7 @@ import { useAdmin } from '../context/AdminContext';
 import { formatPrice } from '../utils/formatPrice';
 import { compressImage } from '../utils/compressImage';
 
+const ADD_NEW = '__add_new__';
 const emptyForm = { name: '', price: '', category: 'Coffee', desc: '', tags: '', image: '', featured: false };
 
 const AdminMenu = () => {
@@ -13,9 +14,11 @@ const AdminMenu = () => {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState('');
+  const [newCategory, setNewCategory] = useState('');
 
   const openAddForm = () => {
     setForm(emptyForm);
+    setNewCategory('');
     setEditingId(null);
     setFormError('');
     setIsFormOpen(true);
@@ -23,6 +26,7 @@ const AdminMenu = () => {
 
   const openEditForm = (item) => {
     setForm({ ...item, price: item.price.toString(), tags: item.tags.join(', ') });
+    setNewCategory('');
     setEditingId(item._id);
     setFormError('');
     setIsFormOpen(true);
@@ -52,9 +56,9 @@ const AdminMenu = () => {
       setFormError('Item name is required.');
       return;
     }
-    const categoryValue = form.category.trim();
+    const categoryValue = (form.category === ADD_NEW ? newCategory : form.category).trim();
     if (categoryValue.length < 2) {
-      setFormError('Please choose or type a category (at least 2 letters).');
+      setFormError('Please choose a category, or type the new category name (at least 2 letters).');
       return;
     }
     if (isNaN(priceValue) || priceValue <= 0) {
@@ -169,18 +173,22 @@ const AdminMenu = () => {
                     value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
                     className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
                   />
-                  <div>
-                    <input
-                      type="text" required list="menu-categories" placeholder="Category (choose or type new)"
-                      maxLength={40}
-                      value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
-                    />
-                    <datalist id="menu-categories">
-                      {categoryOptions.map((c) => <option key={c} value={c} />)}
-                    </datalist>
-                  </div>
+                  <select
+                    value={form.category}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
+                  >
+                    {categoryOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+                    <option value={ADD_NEW}>+ Add new category</option>
+                  </select>
                 </div>
+                {form.category === ADD_NEW && (
+                  <input
+                    type="text" required autoFocus maxLength={40} placeholder="New category name (e.g. Sandwiches)"
+                    value={newCategory} onChange={(e) => setNewCategory(e.target.value)}
+                    className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
+                  />
+                )}
                 <textarea
                   rows="3" placeholder="Description"
                   value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })}

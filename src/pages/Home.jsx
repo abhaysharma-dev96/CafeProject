@@ -6,6 +6,7 @@ import { Star } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import { apiCall } from '../api';
 import { formatPrice } from '../utils/formatPrice';
+import ContactButtons from '../components/ContactButtons';
 
 
 const Home = () => {
@@ -132,9 +133,10 @@ const Home = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="rounded-[32px] overflow-hidden shadow-xl w-full max-w-[440px] aspect-[4/5] mx-auto md:justify-self-center"
+            className="relative rounded-[32px] overflow-hidden shadow-xl w-full max-w-[440px] aspect-[4/5] mx-auto md:justify-self-center"
           >
             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgWHFEsgHrEou5Sj5ixEiv07587PhkkXV1h2F0OMQBHqvOE8wglJ1ecZQHgVG0kFArYImQDg51Fi0KVvThfzw09SRnVNZEzOgJ3Bx2jLrW5x3CaiPFk3AyoPBgEi90mEgOUP0jzULKLi2HWJYeJ7U2hj_r31gh30fRwVxgOgSxZLRJWPGrU9kPAnXhUXEMgWEL85iNprLG6zGMXOsrMaZ3WAAhTZIQ40XbvgcTJ8LgzKGEDh-dRdlN" alt="Cafe Interior" className="w-full h-full object-cover" />
+            <ContactButtons className="absolute bottom-4 right-4" />
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, x: 50 }}

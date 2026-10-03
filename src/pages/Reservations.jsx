@@ -105,7 +105,7 @@ const Reservations = () => {
     e.preventDefault();
     if (!namePattern.test(review.name.trim())) return showReview('error', 'Please enter your name (letters only).');
     if (!review.rating) return showReview('error', 'Please select a star rating.');
-    if (review.comment.trim().length < 10) return showReview('error', 'Review should be at least 10 characters.');
+    if (review.comment.trim().length < 1) return showReview('error', 'Please write your review.');
     try {
       await addReview({ ...review, name: review.name.trim(), comment: review.comment.trim() });
       setReview({ name: '', rating: 0, comment: '' });
