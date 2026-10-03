@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { compressImage } from '../utils/compressImage';
 
 const emptyForm = {
   id: null,
@@ -17,6 +18,8 @@ const AdminGallery = () => {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState('');
+  const [originalImage, setOriginalImage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const categories = ['All', 'Interior', 'Food & Drink', 'Events'];
   const filteredItems = activeFilter === 'All'
@@ -25,6 +28,7 @@ const AdminGallery = () => {
 
   const openAddForm = () => {
     setForm(emptyForm);
+    setOriginalImage('');
     setEditingId(null);
     setFormError('');
     setIsFormOpen(true);
@@ -32,28 +36,30 @@ const AdminGallery = () => {
 
   const openEditForm = (item) => {
     setForm({ ...item });
+    setOriginalImage(item.image);
     setEditingId(item.id);
     setFormError('');
     setIsFormOpen(true);
   };
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setForm((current) => ({ ...current, image: String(reader.result) }));
-    };
-    reader.readAsDataURL(file);
+    try {
+      const image = await compressImage(file, { maxSize: 1400 });
+      setForm((current) => ({ ...current, image }));
+      setFormError('');
+    } catch (err) {
+      setFormError(err.message);
+    }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const trimmedTitle = form.title.trim();
 
-    if (!trimmedTitle) {
-      setFormError('Title is required.');
+    if (trimmedTitle.length < 2) {
+      setFormError('Title is required (at least 2 characters).');
       return;
     }
 
@@ -62,20 +68,23 @@ const AdminGallery = () => {
       return;
     }
 
-    const payload = {
-      id: editingId ?? Date.now(),
-      title: trimmedTitle,
-      category: form.category,
-      image: form.image
-    };
+    const payload = { title: trimmedTitle, category: form.category };
+    // On edit, only send the image if it was actually changed
+    if (!editingId || form.image !== originalImage) payload.image = form.image;
 
-    if (editingId) {
-      updateGalleryItem(editingId, payload);
-    } else {
-      addGalleryItem(payload);
+    setSaving(true);
+    try {
+      if (editingId) {
+        await updateGalleryItem(editingId, payload);
+      } else {
+        await addGalleryItem(payload);
+      }
+      setIsFormOpen(false);
+    } catch (err) {
+      setFormError(err.message || 'Could not save. Please try again.');
+    } finally {
+      setSaving(false);
     }
-
-    setIsFormOpen(false);
   };
 
   return (
@@ -129,7 +138,7 @@ const AdminGallery = () => {
                   <button
                     onClick={() => {
                       if (window.confirm(`Delete "${item.title}"?`)) {
-                        deleteGalleryItem(item.id);
+                        deleteGalleryItem(item.id).catch((err) => alert(err.message || 'Could not delete.'));
                       }
                     }}
                     className="p-2 rounded-full bg-surface text-secondary hover:bg-error-container hover:text-on-error-container transition-all"
@@ -195,7 +204,7 @@ const AdminGallery = () => {
                 </label>
 
                 <input
-                  type="url"
+                  type="text"
                   placeholder="Or paste image URL"
                   value={form.image}
                   onChange={(e) => setForm({ ...form, image: e.target.value })}
@@ -212,8 +221,8 @@ const AdminGallery = () => {
                   <p className="text-sm font-bold text-on-error-container bg-error-container px-4 py-2 rounded-xl">{formError}</p>
                 )}
 
-                <button type="submit" className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">
-                  {editingId ? 'Save Changes' : 'Add Image'}
+                <button type="submit" disabled={saving} className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-60">
+                  {saving ? 'Saving...' : editingId ? 'Save Changes' : 'Add Image'}
                 </button>
               </form>
             </motion.div>

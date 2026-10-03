@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Check, X as XIcon } from 'lucide-react';
+import { Trash2, Check, X as XIcon, Eye } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import DetailModal, { DetailRow } from '../components/DetailModal';
 
 const AdminReservations = () => {
   const { reservations, updateReservationStatus, deleteReservation } = useAdmin();
+  const [viewing, setViewing] = useState(null);
+  const viewed = viewing ? reservations.find((r) => r._id === viewing) : null;
 
   return (
     <div>
@@ -57,6 +60,13 @@ const AdminReservations = () => {
                     </td>
                     <td className="p-5">
                       <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => setViewing(r._id)}
+                          className="flex items-center gap-1 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold hover:shadow-lg transition-all"
+                          title="View details"
+                        >
+                          <Eye size={14} /> View
+                        </button>
                         {r.status !== 'confirmed' && (
                           <button
                             onClick={() => updateReservationStatus(r._id, 'confirmed')}
@@ -95,6 +105,33 @@ const AdminReservations = () => {
           </table>
         </div>
       )}
+
+      <AnimatePresence>
+        {viewed && (
+          <DetailModal title="Reservation" onClose={() => setViewing(null)}>
+            <DetailRow label="Name">{viewed.name}</DetailRow>
+            <DetailRow label="Phone">
+              {viewed.phone ? <a href={`tel:${viewed.phone}`} className="text-primary underline">{viewed.phone}</a> : '—'}
+            </DetailRow>
+            <DetailRow label="Email">
+              {viewed.email ? <a href={`mailto:${viewed.email}`} className="text-primary underline break-all">{viewed.email}</a> : '—'}
+            </DetailRow>
+            <DetailRow label="Date & Time">{viewed.date} — {viewed.time}</DetailRow>
+            <DetailRow label="Party Size">{viewed.partySize}</DetailRow>
+            <DetailRow label="Notes / Special Requests">{viewed.notes || '—'}</DetailRow>
+            <DetailRow label="Status"><span className="capitalize font-bold">{viewed.status}</span></DetailRow>
+            <DetailRow label="Booked On">{new Date(viewed.createdAt).toLocaleString()}</DetailRow>
+            <div className="mt-6 flex gap-3">
+              {viewed.status !== 'confirmed' && (
+                <button onClick={() => updateReservationStatus(viewed._id, 'confirmed')} className="flex-1 bg-tertiary-fixed text-on-tertiary-fixed py-3 rounded-2xl font-bold hover:scale-[1.02] transition-transform">Confirm</button>
+              )}
+              {viewed.status !== 'cancelled' && (
+                <button onClick={() => updateReservationStatus(viewed._id, 'cancelled')} className="flex-1 bg-error-container text-on-error-container py-3 rounded-2xl font-bold hover:scale-[1.02] transition-transform">Cancel</button>
+              )}
+            </div>
+          </DetailModal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { Plus, Trash2, Printer, ClipboardList } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { compressImage } from '../utils/compressImage';
 
 const AdminQRCodes = () => {
   const { tables, addTable, removeTable, customQrImages, saveCustomQrImage, clearCustomQrImage } = useAdmin();
@@ -51,31 +52,36 @@ const AdminQRCodes = () => {
     printWindow.document.close();
   };
 
+  const safe = async (action) => {
+    try {
+      await action();
+      setEditingId(null);
+      setCustomQrUrl('');
+    } catch (err) {
+      setError(err.message || 'Could not save. Please try again.');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const handleCustomQrUpload = (event, tableId) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      saveCustomQrImage(tableId, String(reader.result));
-      setEditingId(null);
-      setCustomQrUrl('');
-    };
-    reader.readAsDataURL(file);
+    safe(async () => saveCustomQrImage(tableId, await compressImage(file, { maxSize: 900 })));
   };
 
   const saveCustomQrUrl = (tableId) => {
     const value = customQrUrl.trim();
     if (!value) {
-      clearCustomQrImage(tableId);
+      safe(() => clearCustomQrImage(tableId));
+      return;
+    }
+    // An already-uploaded image shows up as /api/... — nothing to change
+    if (value.startsWith('/api/')) {
       setEditingId(null);
       setCustomQrUrl('');
       return;
     }
-
-    saveCustomQrImage(tableId, value);
-    setEditingId(null);
-    setCustomQrUrl('');
+    safe(() => saveCustomQrImage(tableId, value));
   };
 
   return (
@@ -142,7 +148,7 @@ const AdminQRCodes = () => {
               {editingId === table._id ? (
                 <div className="w-full space-y-2 mb-3">
                   <input
-                    type="url"
+                    type="text"
                     placeholder="Paste QR image URL"
                     value={customQrUrl}
                     onChange={(e) => setCustomQrUrl(e.target.value)}

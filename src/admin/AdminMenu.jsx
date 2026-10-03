@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import { formatPrice } from '../utils/formatPrice';
+import { compressImage } from '../utils/compressImage';
 
-const emptyForm = { name: '', price: '', category: 'Coffee', desc: '', tags: '', image: '' };
+const emptyForm = { name: '', price: '', category: 'Coffee', desc: '', tags: '', image: '', featured: false };
 
 const AdminMenu = () => {
   const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem } = useAdmin();
@@ -27,15 +28,18 @@ const AdminMenu = () => {
     setIsFormOpen(true);
   };
 
-  const handleImageUpload = (event) => {
+  const categoryOptions = [...new Set(['Coffee', 'Tea', 'Snacks', 'Desserts', ...menuItems.map((m) => m.category)])];
+
+  const handleImageUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setForm((current) => ({ ...current, image: String(reader.result) }));
-    };
-    reader.readAsDataURL(file);
+    try {
+      const image = await compressImage(file, { maxSize: 900 });
+      setForm((current) => ({ ...current, image }));
+      setFormError('');
+    } catch (err) {
+      setFormError(err.message);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -46,6 +50,11 @@ const AdminMenu = () => {
 
     if (!trimmedName) {
       setFormError('Item name is required.');
+      return;
+    }
+    const categoryValue = form.category.trim();
+    if (categoryValue.length < 2) {
+      setFormError('Please choose or type a category (at least 2 letters).');
       return;
     }
     if (isNaN(priceValue) || priceValue <= 0) {
@@ -63,7 +72,8 @@ const AdminMenu = () => {
     const payload = {
       name: trimmedName,
       price: priceValue,
-      category: form.category,
+      category: categoryValue,
+      featured: !!form.featured,
       desc: form.desc,
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
       image: form.image || 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=600'
@@ -103,7 +113,7 @@ const AdminMenu = () => {
               <h3 className="font-bold text-primary">{item.name}</h3>
               <span className="text-primary font-bold">{formatPrice(item.price)}</span>
             </div>
-            <p className="text-xs text-secondary/50 uppercase tracking-wider font-bold mb-3">{item.category}</p>
+            <p className="text-xs text-secondary/50 uppercase tracking-wider font-bold mb-3">{item.category}{item.featured ? ' • Featured' : ''}</p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => openEditForm(item)}
@@ -159,12 +169,17 @@ const AdminMenu = () => {
                     value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
                     className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
                   />
-                  <select
-                    value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
-                  >
-                    {['Coffee', 'Tea', 'Snacks', 'Desserts'].map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  <div>
+                    <input
+                      type="text" required list="menu-categories" placeholder="Category (choose or type new)"
+                      maxLength={40}
+                      value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                      className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
+                    />
+                    <datalist id="menu-categories">
+                      {categoryOptions.map((c) => <option key={c} value={c} />)}
+                    </datalist>
+                  </div>
                 </div>
                 <textarea
                   rows="3" placeholder="Description"
@@ -176,6 +191,10 @@ const AdminMenu = () => {
                   value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })}
                   className="w-full bg-surface p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary/10"
                 />
+                <label className="flex items-center gap-3 text-sm font-bold text-secondary">
+                  <input type="checkbox" checked={!!form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
+                  Show on Home page (Signature Serves)
+                </label>
                 <div className="space-y-3">
                   <label className="block text-sm font-bold text-secondary">
                     Upload Image

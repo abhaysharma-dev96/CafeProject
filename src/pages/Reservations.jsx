@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, CheckCircle2, AlertCircle, Star } from 'lucide-react';
+import { Calendar, MapPin, CheckCircle2, AlertCircle, Star, Phone, MessageCircle } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const timeSlots = [
@@ -22,6 +22,14 @@ const Reservations = () => {
   const todayStr = new Date().toISOString().split('T')[0];
   const { addReservation, addMessage, addReview, siteSettings } = useAdmin();
   const mapAddress = siteSettings?.address || '123 Artisan Alley, Portland, OR 97209';
+
+  // Call / WhatsApp buttons. Numbers, message and on/off switches come from Admin > Settings.
+  const callNumber = String(siteSettings?.contactNumber || '').trim();
+  const callDigits = callNumber.replace(/[^\d+]/g, '');
+  const showCall = siteSettings?.callEnabled !== false && callDigits.length >= 7;
+  const waDigits = String(siteSettings?.whatsappNumber || '').replace(/\D/g, '');
+  const showWhatsApp = !!siteSettings?.whatsappEnabled && waDigits.length >= 7;
+  const whatsappHref = `https://wa.me/${waDigits}${siteSettings?.whatsappMessage ? `?text=${encodeURIComponent(siteSettings.whatsappMessage)}` : ''}`;
 
   const [reservation, setReservation] = useState({
     name: '',
@@ -322,7 +330,30 @@ const Reservations = () => {
               transition={{ delay: 0.4 }}
               className="bg-surface-container-low p-6 sm:p-10 rounded-[32px] sm:rounded-[40px]"
             >
-              <h3 className="font-headline-md text-3xl text-primary mb-8">Get in Touch</h3>
+              <h3 className="font-headline-md text-3xl text-primary mb-6">Get in Touch</h3>
+
+              {(showCall || showWhatsApp) && (
+                <div className="flex flex-wrap gap-3 mb-8">
+                  {showCall && (
+                    <a
+                      href={`tel:${callDigits}`}
+                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 bg-primary text-white py-3 px-5 rounded-2xl font-bold hover:shadow-lg active:scale-[0.98] transition-all"
+                    >
+                      <Phone size={18} /> Call Us
+                    </a>
+                  )}
+                  {showWhatsApp && (
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 px-5 rounded-2xl font-bold hover:shadow-lg active:scale-[0.98] transition-all"
+                    >
+                      <MessageCircle size={18} /> WhatsApp
+                    </a>
+                  )}
+                </div>
+              )}
               <form className="space-y-6" onSubmit={handleContactSubmit} noValidate>
                 <input 
                   type="text" 
@@ -462,7 +493,6 @@ const Reservations = () => {
             </div>
             <textarea
               rows="4"
-              maxLength={500}
               placeholder="Tell us about your visit..."
               value={review.comment}
               onChange={(e) => setReview({ ...review, comment: e.target.value })}

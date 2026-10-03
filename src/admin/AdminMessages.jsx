@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, MailOpen } from 'lucide-react';
+import { Trash2, MailOpen, Eye } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import DetailModal, { DetailRow } from '../components/DetailModal';
 
 const AdminMessages = () => {
   const { messages, markMessageRead, deleteMessage } = useAdmin();
+  const [viewing, setViewing] = useState(null);
+
+  const openMessage = (m) => {
+    setViewing(m);
+    if (!m.read) markMessageRead(m._id);
+  };
 
   return (
     <div>
@@ -37,8 +44,15 @@ const AdminMessages = () => {
                     {m.subject}
                   </span>
                 </div>
-                <p className="text-secondary text-sm leading-relaxed mb-4">{m.message}</p>
+                <p className="text-secondary text-sm leading-relaxed mb-4 line-clamp-2">{m.message}</p>
                 <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => openMessage(m)}
+                    className="flex items-center gap-1 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:shadow-lg transition-all"
+                    title="View full message"
+                  >
+                    <Eye size={14} /> View
+                  </button>
                   {!m.read && (
                     <button
                       onClick={() => markMessageRead(m._id)}
@@ -65,6 +79,24 @@ const AdminMessages = () => {
           </AnimatePresence>
         </div>
       )}
+
+      <AnimatePresence>
+        {viewing && (
+          <DetailModal title="Message" onClose={() => setViewing(null)}>
+            <DetailRow label="From">{viewing.name}</DetailRow>
+            <DetailRow label="Email"><a href={`mailto:${viewing.email}`} className="text-primary underline break-all">{viewing.email}</a></DetailRow>
+            <DetailRow label="Subject">{viewing.subject}</DetailRow>
+            <DetailRow label="Received">{new Date(viewing.createdAt).toLocaleString()}</DetailRow>
+            <DetailRow label="Message">{viewing.message}</DetailRow>
+            <a
+              href={`mailto:${viewing.email}?subject=${encodeURIComponent('Re: ' + viewing.subject)}`}
+              className="mt-6 block text-center bg-primary text-white py-3 rounded-2xl font-bold hover:shadow-lg transition-all"
+            >
+              Reply by Email
+            </a>
+          </DetailModal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

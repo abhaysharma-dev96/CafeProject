@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { KeyRound, Save, Settings as SettingsIcon } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { compressImage } from '../utils/compressImage';
 
 const emptySettings = {
   logoUrl: '',
@@ -12,6 +13,7 @@ const emptySettings = {
   quickLinks: 'Home|/\nMenu|/menu\nAbout|/about\nGallery|/gallery\nReservations|/reservations',
   whatsappNumber: '+15551234567',
   whatsappEnabled: true,
+  callEnabled: true,
   whatsappMessage: 'Hello, I would like to know more about Brew & Hearth.',
   shopOpenTime: '08:00 AM',
   shopCloseTime: '08:00 PM',
@@ -40,12 +42,14 @@ const AdminSettings = () => {
 
   const update = (key, value) => setForm((current) => ({ ...current, [key]: value }));
 
-  const chooseLogo = (event) => {
+  const chooseLogo = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => update('logoUrl', reader.result);
-    reader.readAsDataURL(file);
+    try {
+      update('logoUrl', await compressImage(file, { maxSize: 400 }));
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   const removeLogo = () => {
@@ -138,7 +142,12 @@ const AdminSettings = () => {
 
             <label className="flex items-center gap-3 text-sm font-bold text-secondary">
               <input type="checkbox" checked={form.whatsappEnabled} onChange={(event) => update('whatsappEnabled', event.target.checked)} />
-              Enable WhatsApp button
+              Enable WhatsApp button (Reservations page and footer)
+            </label>
+
+            <label className="flex items-center gap-3 text-sm font-bold text-secondary">
+              <input type="checkbox" checked={form.callEnabled !== false} onChange={(event) => update('callEnabled', event.target.checked)} />
+              Enable Call button (uses the Contact Number above)
             </label>
 
             <label className="block text-sm font-bold text-secondary">

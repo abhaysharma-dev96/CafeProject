@@ -6,7 +6,7 @@ import { useAdmin } from '../context/AdminContext';
 const Gallery = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const { siteSettings, galleryItems } = useAdmin();
+  const { siteSettings, galleryItems, galleryLoading } = useAdmin();
   const brandName = siteSettings?.websiteName || 'Brew & Hearth';
 
   const categories = ['All', 'Interior', 'Food & Drink', 'Events'];
@@ -77,6 +77,10 @@ const Gallery = () => {
             </button>
           ))}
         </div>
+
+        {!galleryLoading && filteredItems.length === 0 && (
+          <p className="text-center text-secondary/60 py-16">No photos here yet. Please check back soon.</p>
+        )}
 
         {/* Gallery Grid */}
         <motion.div 

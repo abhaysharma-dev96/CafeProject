@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Plus, Minus, X, Maximize2, UtensilsCrossed } from 'lucide-react';
@@ -15,7 +15,16 @@ const Menu = () => {
   const { addToCart, removeFromCart, getQuantity, tableId, setTableId } = useCart();
   const { menuItems, menuLoading, menuError, refreshMenu } = useAdmin();
   const [searchParams] = useSearchParams();
-  const categories = ['Coffee', 'Tea', 'Snacks', 'Desserts'];
+  // Sections come from the menu itself: any category added in Admin > Menu gets its own tab
+  const categories = useMemo(() => {
+    const preferred = ['Coffee', 'Tea', 'Snacks', 'Desserts'];
+    const found = [...new Set(menuItems.map((item) => item.category).filter(Boolean))];
+    return [
+      ...preferred.filter((c) => found.includes(c)),
+      ...found.filter((c) => !preferred.includes(c)).sort((a, b) => a.localeCompare(b))
+    ];
+  }, [menuItems]);
+  const currentTab = categories.includes(activeTab) ? activeTab : (categories[0] || '');
 
   useEffect(() => {
     const tableParam = searchParams.get('table');
@@ -40,7 +49,7 @@ const Menu = () => {
   }, [activeTab]);
 
   let filteredItems = menuItems
-    .filter(item => item.category === activeTab)
+    .filter(item => item.category === currentTab)
     .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (sortBy === 'price-low') filteredItems = [...filteredItems].sort((a, b) => a.price - b.price);
@@ -71,15 +80,15 @@ const Menu = () => {
 
         {/* Filter Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
-          <div className="flex gap-8 border-b border-primary/10 w-full md:w-auto">
+          <div className="flex gap-8 border-b border-primary/10 w-full md:w-auto overflow-x-auto whitespace-nowrap">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`pb-4 px-2 relative transition-all ${activeTab === cat ? 'text-primary font-bold' : 'text-secondary hover:text-primary'}`}
+                className={`pb-4 px-2 relative transition-all ${currentTab === cat ? 'text-primary font-bold' : 'text-secondary hover:text-primary'}`}
               >
                 {cat}
-                {activeTab === cat && (
+                {currentTab === cat && (
                   <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
                 )}
               </button>
