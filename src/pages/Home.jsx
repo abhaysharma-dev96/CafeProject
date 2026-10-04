@@ -24,9 +24,14 @@ const Home = () => {
 
   const slides = approvedReviews.map((r) => ({ quote: r.comment, author: `— ${r.name}`, rating: r.rating }));
 
-  // "Signature Serves": items ticked "Show on Home page" in Admin > Menu (otherwise the first 3 menu items)
-  const featuredPick = menuItems.filter((item) => item.featured);
-  const featuredItems = (featuredPick.length > 0 ? featuredPick : menuItems).slice(0, 3);
+  // "Signature Serves" always shows 3 items: the ones ticked "Show on Home page" in Admin > Menu first,
+  // then the oldest menu items fill the remaining slots. A newly added item never pushes out existing ones
+  // unless it is ticked.
+  const oldestFirst = [...menuItems].sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+  const featuredItems = [
+    ...oldestFirst.filter((item) => item.featured),
+    ...oldestFirst.filter((item) => !item.featured)
+  ].slice(0, 3);
 
   useEffect(() => {
     const interval = setInterval(() => {
