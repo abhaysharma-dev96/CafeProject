@@ -78,7 +78,7 @@ const AdminOrders = () => {
             {!order.paid && (
               <button
                 onClick={() => {
-                  if (window.confirm(`Mark Table ${order.table}'s order as paid? .`)) {
+                  if (window.confirm(`Mark Table ${order.table}'s order as paid .`)) {
                     markOrderPaid(order._id);
                   }
                 }}
