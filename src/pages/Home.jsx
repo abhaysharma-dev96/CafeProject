@@ -49,7 +49,7 @@ const Home = () => {
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIGUirKF9592Q7qIY0ACK93vmB-cwYnC_aYf36U81Bod2cJ30xMZbZwxe16YuLde6Db9I59gKsRo2DPd0YYI0lJgXLomAeDyDO477OfxZsv3WSQbitn84dpLkkJu5SHBWq05MHTp6upAUKaok9vuDy1svH3VE5kcERZrrIabaUzQ3uCf2DhB1AydBF7oZHlzZgdXgVGmTwC-f1NeukWXcaZPxn41b1nEt8sRQCQ96Fu5bYLnVU4X9J" 
-            alt="Coffee" 
+            alt="Freshly brewed specialty coffee at the café" 
             className="w-full h-full object-cover scale-[1.2]"
           />
           <div className="absolute inset-0 bg-surface/45" />

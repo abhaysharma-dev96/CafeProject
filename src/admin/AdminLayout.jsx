@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, Outlet, Navigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, MessageSquare, Star, Coffee, LogOut, Menu as MenuIcon, X, UtensilsCrossed, QrCode, ChefHat, Settings } from 'lucide-react';
+import { LayoutDashboard, Calendar, MessageSquare, Star, Coffee, LogOut, Menu as MenuIcon, X, UtensilsCrossed, QrCode, ChefHat, Settings, Search } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const AdminLayout = () => {
@@ -39,6 +39,7 @@ const AdminLayout = () => {
     { to: '/admin/menu', label: 'Menu', icon: Coffee },
     { to: '/admin/gallery', label: 'Gallery', icon: MenuIcon },
     { to: '/admin/qr-codes', label: 'QR Codes', icon: QrCode },
+    { to: '/admin/seo', label: 'SEO', icon: Search },
     { to: '/admin/settings', label: 'Settings', icon: Settings }
   ];
   const SidebarContent = () => (

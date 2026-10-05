@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /kitchen
+
+Sitemap: https://www.brewandhearth.com/sitemap.xml

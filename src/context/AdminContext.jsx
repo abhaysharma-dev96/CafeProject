@@ -41,6 +41,16 @@ export const AdminProvider = ({ children }) => {
     return data;
   };
 
+  // SEO has its own endpoint so it never collides with the general Settings form
+  const updateSeo = async (seo) => {
+    const data = await apiCall('/settings/seo', {
+      method: 'PUT',
+      body: JSON.stringify({ seo })
+    });
+    setSiteSettings(data);
+    return data;
+  };
+
   const changePassword = async (currentPassword, newPassword) => {
     return apiCall('/auth/password', {
       method: 'PATCH',
@@ -352,7 +362,7 @@ export const AdminProvider = ({ children }) => {
       messages, addMessage, markMessageRead, deleteMessage, refreshMessages,
       reviews, addReview, updateReviewStatus, deleteReview, refreshReviews,
       menuItems, menuLoading, menuError, addMenuItem, updateMenuItem, deleteMenuItem, refreshMenu,
-      getSettings, updateSettings, changePassword, siteSettings,
+      getSettings, updateSettings, updateSeo, changePassword, siteSettings,
       tables, addTable, removeTable,
       orders, addOrder, updateOrderStatus, deleteOrder, markOrderPaid, getTableStatus, refreshOrders,
       galleryItems, galleryLoading, refreshGallery, addGalleryItem, updateGalleryItem, deleteGalleryItem,

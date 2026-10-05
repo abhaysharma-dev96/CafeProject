@@ -4,12 +4,33 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brew & Hearth</title>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Default SEO tags (for crawlers that do not run JavaScript).
+         src/components/Seo.jsx replaces them per page once the app loads. -->
+    <title>Brew &amp; Hearth | Specialty Coffee, Artisan Bakery &amp; Cozy Café in Portland, OR</title>
+    <meta name="description" content="Visit Brew &amp; Hearth in Portland for freshly roasted specialty coffee, handcrafted espresso, artisan pastries and all-day brunch in a warm, cozy café. Order online or reserve a table." />
+    <meta name="keywords" content="cafe in Portland, best coffee shop in Portland, specialty coffee Portland OR, artisan bakery Portland, fresh roasted coffee, local coffee roasters, cozy cafe near me, brunch cafe Portland, espresso bar, Brew &amp; Hearth" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Brew &amp; Hearth" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Brew &amp; Hearth" />
+    <meta property="og:title" content="Brew &amp; Hearth | Specialty Coffee, Artisan Bakery &amp; Cozy Café in Portland, OR" />
+    <meta property="og:description" content="Freshly roasted specialty coffee, artisan pastries and all-day brunch in a cozy Portland café." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script id="seo-jsonld" type="application/ld+json">
+      {"@context":"https://schema.org","@type":"CafeOrCoffeeShop","name":"Brew & Hearth","servesCuisine":["Coffee","Bakery","Brunch"],"address":{"@type":"PostalAddress","streetAddress":"123 Artisan Alley","addressLocality":"Portland","addressRegion":"OR","postalCode":"97209","addressCountry":"US"}}
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   </head>
   <body>
+    <noscript>Brew &amp; Hearth – specialty coffee, artisan bakery and cozy café in Portland, OR. Please enable JavaScript to view our menu and book a table.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
