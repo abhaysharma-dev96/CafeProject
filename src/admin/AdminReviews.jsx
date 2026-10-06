@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Check, X as XIcon, Trash2, Star } from 'lucide-react';
+import { Check, X as XIcon, Trash2, Star, Eye } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 import { useAdmin } from '../context/AdminContext';
+import DetailModal, { DetailRow } from '../components/DetailModal';
 
 const filters = [
   { key: 'pending', label: 'Pending' },
@@ -21,6 +23,7 @@ const AdminReviews = () => {
   const { reviews, updateReviewStatus, deleteReview } = useAdmin();
   const [filter, setFilter] = useState('pending');
   const [error, setError] = useState('');
+  const [viewing, setViewing] = useState(null);
 
   const shown = filter === 'all' ? reviews : reviews.filter((r) => r.status === filter);
   const count = (key) => (key === 'all' ? reviews.length : reviews.filter((r) => r.status === key).length);
@@ -29,6 +32,17 @@ const AdminReviews = () => {
     setError('');
     try { await action(); } catch (err) { setError(err.message || 'Something went wrong.'); }
   };
+
+  // Approve/reject from inside the popup, then close it
+  const decide = async (review, status) => {
+    await run(() => updateReviewStatus(review._id, status));
+    setViewing(null);
+  };
+
+  const statusStyle = (status) =>
+    status === 'approved' ? 'bg-tertiary-fixed text-on-tertiary-fixed' :
+    status === 'rejected' ? 'bg-error-container text-on-error-container' :
+    'bg-secondary-container text-on-secondary-container';
 
   return (
     <div>
@@ -63,16 +77,19 @@ const AdminReviews = () => {
                   <div className="mt-1"><Stars value={r.rating} /></div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${
-                    r.status === 'approved' ? 'bg-tertiary-fixed text-on-tertiary-fixed' :
-                    r.status === 'rejected' ? 'bg-error-container text-on-error-container' :
-                    'bg-secondary-container text-on-secondary-container'
-                  }`}>{r.status}</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusStyle(r.status)}`}>{r.status}</span>
                   <span className="text-xs text-secondary/50">{new Date(r.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
-              <p className="mt-4 text-secondary leading-relaxed">{r.comment}</p>
-              <div className="mt-4 flex gap-2">
+              <p className="mt-4 text-secondary leading-relaxed line-clamp-3">{r.comment}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  onClick={() => setViewing(r)}
+                  title="View full review"
+                  className="flex items-center gap-1 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:shadow-lg transition-all"
+                >
+                  <Eye size={14} /> View
+                </button>
                 {r.status !== 'approved' && (
                   <button onClick={() => run(() => updateReviewStatus(r._id, 'approved'))} className="flex items-center gap-1 px-4 py-2 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold hover:scale-105 transition-transform">
                     <Check size={14} /> Approve
@@ -83,13 +100,6 @@ const AdminReviews = () => {
                     <XIcon size={14} /> Reject
                   </button>
                 )}
-                  <button
-                    onClick={() => openMessage(m)}
-                    className="flex items-center gap-1 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:shadow-lg transition-all"
-                    title="View full message"
-                  >
-                    <Eye size={14} /> View
-                  </button>
                 <button
                   onClick={() => { if (window.confirm(`Delete review by ${r.name}? This cannot be undone.`)) run(() => deleteReview(r._id)); }}
                   className="flex items-center gap-1 px-4 py-2 rounded-full bg-surface text-secondary text-xs font-bold hover:bg-primary hover:text-white transition-all"
@@ -101,6 +111,37 @@ const AdminReviews = () => {
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {viewing && (
+          <DetailModal title="Review" onClose={() => setViewing(null)}>
+            <DetailRow label="From">{viewing.name}</DetailRow>
+            <DetailRow label="Rating">
+              <div className="flex items-center gap-2">
+                <Stars value={viewing.rating} />
+                <span className="text-sm">{viewing.rating} / 5</span>
+              </div>
+            </DetailRow>
+            <DetailRow label="Status">
+              <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusStyle(viewing.status)}`}>{viewing.status}</span>
+            </DetailRow>
+            <DetailRow label="Submitted">{new Date(viewing.createdAt).toLocaleString()}</DetailRow>
+            <DetailRow label="Review">{viewing.comment}</DetailRow>
+            <div className="mt-6 flex gap-3">
+              {viewing.status !== 'approved' && (
+                <button onClick={() => decide(viewing, 'approved')} className="flex-1 flex items-center justify-center gap-1 py-3 rounded-2xl bg-tertiary-fixed text-on-tertiary-fixed text-sm font-bold hover:shadow-lg transition-all">
+                  <Check size={16} /> Approve
+                </button>
+              )}
+              {viewing.status !== 'rejected' && (
+                <button onClick={() => decide(viewing, 'rejected')} className="flex-1 flex items-center justify-center gap-1 py-3 rounded-2xl bg-error-container text-on-error-container text-sm font-bold hover:shadow-lg transition-all">
+                  <XIcon size={16} /> Reject
+                </button>
+              )}
+            </div>
+          </DetailModal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
