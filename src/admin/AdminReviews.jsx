@@ -83,6 +83,13 @@ const AdminReviews = () => {
                     <XIcon size={14} /> Reject
                   </button>
                 )}
+                  <button
+                    onClick={() => openMessage(m)}
+                    className="flex items-center gap-1 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:shadow-lg transition-all"
+                    title="View full message"
+                  >
+                    <Eye size={14} /> View
+                  </button>
                 <button
                   onClick={() => { if (window.confirm(`Delete review by ${r.name}? This cannot be undone.`)) run(() => deleteReview(r._id)); }}
                   className="flex items-center gap-1 px-4 py-2 rounded-full bg-surface text-secondary text-xs font-bold hover:bg-primary hover:text-white transition-all"
